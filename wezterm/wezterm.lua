@@ -5,36 +5,34 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
 -- Font setup
-config.font = wezterm.font("CaskaydiaCove Nerd Font") 
+config.font = wezterm.font("CaskaydiaCove Nerd Font")
+config.font_size = 11
 
-config.font_size = 14
-
--- Appearance
-config.window_background_image= '/home/sungp/.config/wezterm/bg.jpg'
-
-config.initial_cols = 240 
-
-config.initial_rows = 67
-
+-- Appearance settings
+config.window_background_image = '/home/sungp/.config/wezterm/bg.jpg'  -- Set background image
 config.window_background_image_hsb = {
-  brightness = 0.3,
-
-  hue = 1.0,
-
-  saturation = 1.0,
+  brightness = 0.3,  -- Adjust brightness of the background
+  hue = 1.0,        -- Adjust the hue of the background
+  saturation = 1.0,  -- Adjust the saturation of the background
 }
 
-config.enable_tab_bar = false
+config.initial_cols = 240  -- Initial number of columns (width of terminal)
+config.initial_rows = 67   -- Initial number of rows (height of terminal)
 
-config.window_decorations = 'RESIZE'
+config.enable_tab_bar = false  -- Disable the tab bar
+config.window_decorations = 'RESIZE'  -- Set window decorations to allow resizing
 
--- config.window_background_opacity = 0.95
-
--- Set font size (optional, you can change the size)
-config.font_size = 12
-
--- Set the color scheme
+-- Set color scheme (make sure 'Catppuccin Frappé (Gogh)' is installed)
 config.color_scheme = 'Catppuccin Frappé (Gogh)'
 
--- Finally, return the configuration to wezterm
+-- Key bindings for copy and paste
+config.keys = {
+  -- Copy with Ctrl + Shift + C
+  { key = 'C', mods = 'CTRL|SHIFT', action = wezterm.action.CopyTo('Clipboard') },
+
+  -- Paste with Ctrl + Shift + V
+  { key = 'V', mods = 'CTRL|SHIFT', action = wezterm.action.PasteFrom('Clipboard') },
+}
+
+-- Return the final configuration to wezterm
 return config
