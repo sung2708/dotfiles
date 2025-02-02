@@ -11,7 +11,6 @@ fi
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)'
 
 # nvm path
 export NVM_DIR="$HOME/.nvm"
@@ -90,7 +89,6 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(git
         zsh-autosuggestions
         zsh-syntax-highlighting
-        zsh-bat
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -133,6 +131,8 @@ alias oh='cd ~ && echo "Went back home"'
 alias py='python3'
 alias pip='pip3'
 alias s='source ~/.zshrc'
-alias zsh='nvim ~/.zshrc'
-alias nv='nvim .config/nvim'
-alias nw='nvim .config/wezterm/wezterm.lua'
+alias zsh='cd ~ && nvim sungp/dotfiles/zsh/.zshrc'
+alias nv='cd ~ && nvim sungp/dotfiles/nvim/'
+alias nw='cd ~ && nvim sungp/dotfiles/wezterm/wezterm.lua'
+alias bat='batcat'
+alias e='exit'
