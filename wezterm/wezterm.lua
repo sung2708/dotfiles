@@ -16,11 +16,13 @@ config.font_size = 11
 --  saturation = 1.0,  -- Adjust the saturation of the background
 --}
 
+
 config.initial_cols = 240  -- Initial number of columns (width of terminal)
 config.initial_rows = 67   -- Initial number of rows (height of terminal)
 
 config.enable_tab_bar = false  -- Disable the tab bar
 config.window_decorations = 'RESIZE'  -- Set window decorations to allow resizing
+
 
 -- Set color scheme (make sure 'Catppuccin Frappé (Gogh)' is installed)
 config.color_scheme = 'Catppuccin Mocha'
