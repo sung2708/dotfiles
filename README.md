@@ -1,5 +1,3 @@
-<div style="text-align: right"> <a href="#top">Back to top</a> </div>
-
 # 1. Introduction
 
 My dotfile repository is a collection of configuration files that I use to customize my system. The repository is organized in a way that makes it easy to install and manage the configuration files. The repository is also designed to be easily portable, so that I can quickly set up my configuration on a new system.
