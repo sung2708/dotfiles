@@ -39,17 +39,26 @@ pip3 install thefuck --user
 - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
 - [zsh-fzf-history-search](https://github.com/joshskidmore/zsh-fzf-history-search)
 
-```bash
-git clone https://github.com/sung2708/dotfiles.git
+#### Synchronize configuration from repository
 
-cd dotfiles
+``` bash
+# Clone the repository
+git clone https://github.com/sung2708/dotfiles.git ~/dotfiles
 
+# Navigate into the dotfiles directory
+cd ~/dotfiles || exit
+
+# Create symbolic links using stow
 stow -t ~/.config/nvim nvim
-stow -t ~/ tmux
-stow -t ~/ zsh
+stow -t ~ tmux
+stow -t ~ zsh
 stow -t ~/.config/wezterm wezterm
+
+# Verify that the symlinks were created correctly
+echo "Checking created symlinks..."
+ls -l ~/.config/nvim
+ls -l ~
+ls -l ~/.config/wezterm
 ```
 
-Check symlink is created correctly by running `ls -l` command.
-
-# Keep updated ..
+# Keep updated :new_moon_with_face:
