@@ -5,13 +5,16 @@ return {
         priority = 1000,
         opts = {},
     },
+    { 
+        'olivercederborg/poimandres.nvim',
+        lazy = false,
+        priority = 1000,
+    },
     {
-        'tribela/transparent.nvim',
-        event = 'VimEnter',
-        config = true,
-        auto = true,
-        extra_groups = {},
-        excludes = {},
-    }
+        "catppuccin/nvim",
+        name = "catppuccin",
+        priority = 1000,
+        opts = {},
+    },
 }
 

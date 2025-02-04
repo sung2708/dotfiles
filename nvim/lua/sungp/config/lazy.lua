@@ -29,4 +29,4 @@ require("lazy").setup({
 })
 
 -- Colorscheme
-vim.cmd.colorscheme "tokyonight"
+vim.cmd.colorscheme "catppuccin"

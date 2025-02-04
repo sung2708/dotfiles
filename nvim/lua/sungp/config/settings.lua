@@ -14,6 +14,7 @@ opt.showmode = false -- Disabled since the statusline generally handles this
 
 -- Highlight current line
 opt.cursorline = true
+opt.cursorcolumn = true
 
 -- Enable 24-bit RGB color in the terminal
 opt.termguicolors = true
@@ -87,6 +88,6 @@ vim.cmd("filetype indent on")
 vim.cmd("filetype plugin on")
 vim.cmd("filetype on")
 
--- Enable cursor column (highlighting the column where the cursor is)
-opt.cursorcolumn = true
 vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+vim.cmd("autocmd TermOpen * setlocal winhighlight=Normal:Normal")

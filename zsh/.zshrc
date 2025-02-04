@@ -11,7 +11,6 @@ fi
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-
 # nvm path
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -19,6 +18,13 @@ export NVM_DIR="$HOME/.nvm"
 
 # luarock
 export PATH=$PATH:/home/sungp/.local/share/nvim/lazy-rocks/hererocks/bin
+
+# brew
+export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+
+# clangd 
+export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
+
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
@@ -136,3 +142,5 @@ alias nv='cd ~ && nvim sungp/dotfiles/nvim/'
 alias nw='cd ~ && nvim sungp/dotfiles/wezterm/wezterm.lua'
 alias bat='batcat'
 alias e='exit'
+alias .file='cd ~ && cd sungp/dotfiles'
+alias nt='cd ~ && nvim sungp/dotfiles/tmux/.tmux.conf'

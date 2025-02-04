@@ -9,12 +9,12 @@ config.font = wezterm.font("CaskaydiaCove Nerd Font")
 config.font_size = 11
 
 -- Appearance settings
-config.window_background_image = '/home/sungp/.config/wezterm/bg.jpg'  -- Set background image
-config.window_background_image_hsb = {
-  brightness = 0.5,  -- Adjust brightness of the background
-  hue = 1.0,        -- Adjust the hue of the background
-  saturation = 1.0,  -- Adjust the saturation of the background
-}
+-- config.window_background_image = '/home/sungp/.config/wezterm/bg.jpg'  -- Set background image
+--config.window_background_image_hsb = {
+--  brightness = 0.3,  -- Adjust brightness of the background
+--  hue = 1.0,        -- Adjust the hue of the background
+--  saturation = 1.0,  -- Adjust the saturation of the background
+--}
 
 config.initial_cols = 240  -- Initial number of columns (width of terminal)
 config.initial_rows = 67   -- Initial number of rows (height of terminal)
