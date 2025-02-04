@@ -8,7 +8,6 @@ return {
     opts = {
       auto_preview = false, -- Disable auto preview
       auto_fold = true, -- Automatically fold entries
-      use_lsp_diagnostic_signs = true, -- Use LSP diagnostic signs
       icons = {
         folder_closed = " ", -- Icon for closed folders
         folder_open = " ", -- Icon for open folders
@@ -24,23 +23,18 @@ return {
     keys = {
       {
         "<leader>xx",
-        "<cmd>Trouble diagnostics toggle<cr>",
-        desc = "Diagnostics (Trouble)",
+        "<cmd>Trouble quickfix toggle<cr>",
+        desc = "Diagnostics (Trouble - Quickfix)",
       },
       {
         "<leader>xX",
-        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-        desc = "Buffer Diagnostics (Trouble)",
+        "<cmd>Trouble loclist toggle<cr>",
+        desc = "Buffer Diagnostics (Trouble - Location List)",
       },
       {
         "<leader>cs",
         "<cmd>Trouble symbols toggle focus=false<cr>",
         desc = "Symbols (Trouble)",
-      },
-      {
-        "<leader>cl",
-        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-        desc = "LSP Definitions / references / ... (Trouble)",
       },
       {
         "<leader>xL",
@@ -51,6 +45,11 @@ return {
         "<leader>xQ",
         "<cmd>Trouble qflist toggle<cr>",
         desc = "Quickfix List (Trouble)",
+      },
+      {
+        "<leader>cd",
+        "<cmd>CocDiagnostics<cr>",
+        desc = "Show diagnostics (Coc)",
       },
     },
   },

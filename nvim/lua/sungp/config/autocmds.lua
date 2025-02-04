@@ -24,3 +24,4 @@ if vim.fn.has('win32') == 1 then
 else
   vim.opt.clipboard = 'unnamedplus' -- Enhanced clipboard on other systems
 end
+

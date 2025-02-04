@@ -22,14 +22,52 @@ export PATH=$PATH:/home/sungp/.local/share/nvim/lazy-rocks/hererocks/bin
 # brew
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 
-# clangd 
-export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
+# bat
+export BAT_THEME='Catppuccin Mocha'
 
+# fzf
+eval "$(fzf --zsh)"
+export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time Oh My Zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+_fzf_compgen_path() {
+  fd --hidden --exclude .git . "$1"
+}
+
+_fzf_compgen_dir() {
+  fd --type=d --hidden --exclude .git . "$1"
+}
+
+source ~/fzf-git.sh/fzf-git.sh
+
+export FZF_DEFAULT_OPTS="
+--color=fg:#D9E0EE,bg:#1E1E2E,hl:#F5A97F,fg+:#F5D0C5,bg+:#6C6F85,hl+:#F5A97F
+--color=info:#A6D189,prompt:#F28FAD,pointer:#89B4FA,marker:#F2D9B5
+--color=spinner:#A6ADC8,header:#D9E0EE
+"
+
+# bat 
+show_file_or_dir_preview="if [ -d {} ]; then eza --tree --color=always {} | head -200; else batcat -n --color=always --line-range :500 {}; fi"
+
+export FZF_CTRL_T_OPTS="--preview '$show_file_or_dir_preview'"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
+
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+    export|unset) fzf --preview "eval 'echo \${}'"         "$@" ;;
+    ssh)          fzf --preview 'dig {}'                   "$@" ;;
+    *)            fzf --preview "$show_file_or_dir_preview" "$@" ;;
+  esac
+}
+
+# fuck
+eval $(thefuck --alias)
+
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
@@ -95,6 +133,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(git
         zsh-autosuggestions
         zsh-syntax-highlighting
+        zsh-fzf-history-search
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -138,9 +177,11 @@ alias py='python3'
 alias pip='pip3'
 alias s='source ~/.zshrc'
 alias zsh='cd ~ && nvim sungp/dotfiles/zsh/.zshrc'
-alias nv='cd ~ && nvim sungp/dotfiles/nvim/'
+alias nv='cd ~ && sungp/dotfiles/nvim/'
 alias nw='cd ~ && nvim sungp/dotfiles/wezterm/wezterm.lua'
 alias bat='batcat'
 alias e='exit'
-alias .file='cd ~ && cd sungp/dotfiles'
+alias .files='cd ~ && cd sungp/dotfiles'
 alias nt='cd ~ && nvim sungp/dotfiles/tmux/.tmux.conf'
+alias ls='eza --color=always --long --git --no-permissions --icons=always'
+alias tree='eza --tree --level=3 --icons=always'
