@@ -16,13 +16,16 @@ config.font_size = 11
 --  saturation = 1.0,  -- Adjust the saturation of the background
 --}
 
-
+config.default_cursor_style = 'SteadyBar'
 config.initial_cols = 240  -- Initial number of columns (width of terminal)
 config.initial_rows = 67   -- Initial number of rows (height of terminal)
 
 config.enable_tab_bar = false  -- Disable the tab bar
 config.window_decorations = 'RESIZE'  -- Set window decorations to allow resizing
 
+config.animation_fps = 1
+config.cursor_blink_ease_in = 'Constant'
+config.cursor_blink_ease_out = 'Constant'
 
 -- Set color scheme (make sure 'Catppuccin Frappé (Gogh)' is installed)
 config.color_scheme = 'Catppuccin Mocha'

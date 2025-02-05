@@ -68,6 +68,9 @@ _fzf_comprun() {
 # fuck
 eval $(thefuck --alias)
 
+# Golines
+export PATH=$PATH:/home/sungp/go/bin
+
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
@@ -183,5 +186,7 @@ alias bat='batcat'
 alias e='exit'
 alias .files='cd ~ && cd sungp/dotfiles'
 alias nt='cd ~ && nvim sungp/dotfiles/tmux/.tmux.conf'
-alias ls='eza --color=always --long --git --no-permissions --icons=always'
+alias ls='eza --color=always --long --git --no-permissions --header --sort=modified --icons=always'
 alias tree='eza --tree --level=3 --icons=always'
+alias f='fuck'
+alias fastfetch='fastfetch --logo uwuntu'
