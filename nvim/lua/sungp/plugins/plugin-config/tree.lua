@@ -42,10 +42,10 @@ return {
     })
 
     -- Key mappings for NvimTree
-    vim.keymap.set("n", "<leader>Ee", ":NvimTreeToggle<CR>", { silent = true, desc = "Toggle NvimTree" })
-    vim.keymap.set("n", "<leader>Er", ":NvimTreeRefresh<CR>", { silent = true, desc = "Refresh NvimTree" })
-    vim.keymap.set("n", "<leader>Es", ":NvimTreeFindFile<CR>", { silent = true, desc = "Find file in NvimTree" })
-    vim.keymap.set("n", "<leader>Ec", ":NvimTreeCollapse<CR>", { silent = true, desc = "Collapse NvimTree" })
-    vim.keymap.set("n", "<leader>Ef", ":NvimTreeFocus<CR>", { silent = true, desc = "Focus Explore" })
+    vim.keymap.set("n", "<leader>ee", ":NvimTreeToggle<CR>", { silent = true, desc = "Toggle NvimTree" })
+    vim.keymap.set("n", "<leader>er", ":NvimTreeRefresh<CR>", { silent = true, desc = "Refresh NvimTree" })
+    vim.keymap.set("n", "<leader>es", ":NvimTreeFindFile<CR>", { silent = true, desc = "Find file in NvimTree" })
+    vim.keymap.set("n", "<leader>ec", ":NvimTreeCollapse<CR>", { silent = true, desc = "Collapse NvimTree" })
+    vim.keymap.set("n", "<leader>ef", ":NvimTreeFocus<CR>", { silent = true, desc = "Focus Explore" })
   end,
 }
