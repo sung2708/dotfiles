@@ -48,7 +48,7 @@ return {
                     capabilities = capabilities,
                 })
             end,
-            
+
             -- clangd specific configuration
             ["clangd"] = function()
                 lspconfig.clangd.setup({
@@ -57,6 +57,9 @@ return {
                         "clangd",
                         "--background-index",
                         "--header-insertion=never",
+                    },
+                    format = {
+                        enable = true,
                     },
                 })
             end,
@@ -101,9 +104,9 @@ return {
                 })
             end,
 
-            -- tsserver specific configuration
-            ["tsserver"] = function()
-                lspconfig.tsserver.setup({
+            -- Thay tsserver bằng typescript-language-server (hoặc ts_ls)
+            ["ts_ls"] = function()
+                lspconfig.ts_ls.setup({
                     capabilities = capabilities,
                     settings = {
                         completions = {
@@ -128,3 +131,4 @@ return {
         })
     end,
 }
+

@@ -46,21 +46,35 @@ return {
         },
     },
     config = function(_, opts)
+        -- Ensure `opts` is available and valid
+        opts = opts or {}
+
         local current_ft = vim.bo.filetype
-        if vim.tbl_contains(opts.exclude.filetypes, current_ft) or vim.tbl_contains(opts.exclude.buftypes, vim.bo.buftype) then
+        local current_buftype = vim.bo.buftype
+
+        -- Exclude the filetypes and buftypes as per configuration
+        if vim.tbl_contains(opts.exclude.filetypes or {}, current_ft) or
+           vim.tbl_contains(opts.exclude.buftypes or {}, current_buftype) then
             return
         end
 
-        -- Highlighting configuration for indentation guides and blank lines
-        vim.cmd([[
-            highlight default IndentBlanklineChar guifg=#2a2e36 gui=nocombine
-            highlight default IndentBlanklineSpaceChar guifg=#2a2e36 gui=nocombine
-            highlight default IndentBlanklineSpaceCharBlankline guifg=#2a2e36 gui=nocombine
-            highlight default IndentBlanklineContextChar guifg=#3e4452 gui=nocombine
-            highlight default IndentBlanklineContextStart guibg=#3e4452 gui=underline
-            highlight default IndentBlanklineContextEnd guibg=#3e4452 gui=underline
-        ]])
+        -- Initialize the plugin with the options
+        local ibl = require("ibl")
+        if ibl then
+            -- Only after loading the plugin, we can setup the highlight groups
+            vim.cmd([[
+                highlight default link IndentBlanklineChar Whitespace
+                highlight default link IndentBlanklineSpaceChar Whitespace
+                highlight default link IndentBlanklineSpaceCharBlankline Whitespace
+                highlight default link IndentBlanklineContextChar Function
+                highlight default link IndentBlanklineContextStart Function
+                highlight default link IndentBlanklineContextEnd Function
+            ]])
 
-        require("ibl").setup(opts)
+            ibl.setup(opts)
+        else
+            print("Error: Failed to load 'ibl'.")
+        end
     end,
 }
+
