@@ -4,7 +4,7 @@ return {
         require('lualine').setup({
             options = {
                 icons_enabled = true,                 -- Enable icons
-                theme = vim.g.colors_name,            -- Use the current colorscheme as the theme
+                theme = auto,            -- Use the current colorscheme as the theme
                 component_separators = { left = '', right = '' },  -- Separators for components
                 section_separators = { left = '', right = '' },    -- Separators for sections
                 disabled_filetypes = { statusline = {}, winbar = {} },  -- Disable for specific filetypes

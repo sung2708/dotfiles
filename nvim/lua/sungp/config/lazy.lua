@@ -29,4 +29,4 @@ require("lazy").setup({
 })
 
 -- Colorscheme
-vim.cmd.colorscheme "catppuccin-mocha"
+vim.cmd.colorscheme "moonlight"

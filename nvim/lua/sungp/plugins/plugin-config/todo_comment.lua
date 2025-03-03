@@ -4,7 +4,7 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
         local comment_todo = require("todo-comments")
-        
+
         -- Keymap for jumping to the next TODO comment
         vim.keymap.set("n", "<leader>]t", function()
             comment_todo.jump_next()
@@ -33,9 +33,9 @@ return {
                 },
             },
             colors = {
-                error = { "LspDiagnosticsDefaultError", "ErrorMsg" },
-                warning = { "LspDiagnosticsDefaultWarning", "WarningMsg" },
-                info = { "LspDiagnosticsDefaultInformation", "MoreMsg" },
+                error = { "DiagnosticError", "ErrorMsg", "#FF5555" },
+                warning = { "DiagnosticWarn", "WarningMsg", "#FFA500" },
+                info = { "DiagnosticInfo", "MoreMsg", "#00FFFF" },
             },
             search = {
                 command = "rg", -- Use ripgrep for searching
@@ -51,3 +51,4 @@ return {
         })
     end,
 }
+

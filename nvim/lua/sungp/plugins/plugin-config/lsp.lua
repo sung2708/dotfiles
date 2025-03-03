@@ -1,10 +1,9 @@
 return {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
         "hrsh7th/cmp-nvim-lsp",
-        { "antosha417/nvim-lsp-file-operations", config = true },
-        { "folke/neodev.nvim", opts = {} },
+        { "antosha417/nvim-lsp-file-operations", config = true }, 
+        { "folke/neodev.nvim", opts = {} }, 
     },
     config = function()
         local lspconfig = require("lspconfig")
@@ -104,7 +103,7 @@ return {
                 })
             end,
 
-            -- Thay tsserver bằng typescript-language-server (hoặc ts_ls)
+            -- typescript-language-server (ts_ls) specific configuration
             ["ts_ls"] = function()
                 lspconfig.ts_ls.setup({
                     capabilities = capabilities,

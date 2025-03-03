@@ -1,8 +1,8 @@
 -- Close buffer without exiting Vim
 vim.keymap.set('n', '<leader>bd', ':bp | sp | bn | bd<CR>', { silent = true })
 
--- Map Shift+Tab to accept Copilot suggestions in Insert mode
-vim.api.nvim_set_keymap('i', '<Right-Tab>', "copilot#Accept('<CR>')", { expr = true })
+-- Delete hightlight
+vim.keymap.set("n", "<leader>h", ":noh<CR>", { silent = true })
 
 -- Key mappings for window resizing
 vim.keymap.set('n', '<M-Right>', ':vertical resize +1<CR>')
@@ -45,4 +45,3 @@ vim.keymap.set('i', 'kj', '<Esc>')
 -- Use 'jk' or 'kj' in Visual mode to exit
 vim.keymap.set('v', 'jk', '<Esc>')
 vim.keymap.set('v', 'kj', '<Esc>')
-

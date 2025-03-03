@@ -1,9 +1,8 @@
 return {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate', -- Run :TSUpdate after installation
-    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-        "windwp/nvim-ts-autotag",
+        "windwp/nvim-ts-autotag", -- Autotag plugin for Treesitter
     },
     config = function()
         -- Configure nvim-treesitter
@@ -11,26 +10,26 @@ return {
             -- Parsers to install
             ensure_installed = {
                 "python", "javascript", "typescript", "html", "css",
-                "java", "c", "cpp"
+                "java", "c", "cpp", "lua", "bash", "json", "yaml"
             },
 
             -- Enable syntax highlighting
             highlight = {
                 enable = true,
-                additional_vim_regex_highlighting = false,
+                additional_vim_regex_highlighting = false, -- Disable Vim's regex highlighting
             },
 
             -- Configure indentation
             indent = {
                 enable = true,
-                disable = { "python" },
+                disable = { "python" }, -- Disable indenting for Python (customizable)
             },
 
-            -- Text objects for better navigation and selection
+            -- Configure text objects for better navigation and selection
             textobjects = {
                 select = {
                     enable = true,
-                    lookahead = true,
+                    lookahead = true, -- Look ahead when selecting
                     keymaps = {
                         ["af"] = "@function.outer", -- Select around the function
                         ["if"] = "@function.inner", -- Select inside the function
@@ -40,7 +39,7 @@ return {
                 },
                 move = {
                     enable = true,
-                    set_jumps = true,
+                    set_jumps = true, -- Set jumps when moving
                     goto_next_start = {
                         ["]f"] = "@function.outer", -- Go to next function start
                         ["]c"] = "@class.outer",    -- Go to next class start
@@ -61,11 +60,14 @@ return {
                     node_decremental = "<S-TAB>", -- Shrink selection
                 },
             },
-            
-            -- Configure autotag plugin
+
+            -- Configure nvim-ts-autotag plugin
             autotag = {
-                enable = true,
+                enable = true, -- Enable auto-closing tags for HTML/XML
             },
+
+            -- Additional configurations if needed
         })
     end,
 }
+
