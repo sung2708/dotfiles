@@ -4,7 +4,7 @@ return {
         name = "tokyonight",
         priority = 1000,
         opts = {
-           -- transparent = true, 
+           transparent = true, 
         },
     },
     { 
@@ -12,7 +12,7 @@ return {
         lazy = false,
         priority = 1000,
         opts = {
-            --transparent = true,
+            transparent = true,
         },
     },
     {
@@ -20,7 +20,7 @@ return {
         name = "catppuccin",
         priority = 1000,
         opts = {
-            --transparent_background = true, 
+            transparent_background = true, 
         },
     },
     {
@@ -36,7 +36,37 @@ return {
         lazy = false,
         priority = 1000,
         config = function()
-            --vim.g.moonlight_disable_background = true
+            vim.g.moonlight_disable_background = true
+        end
+    },
+    {
+	    "rose-pine/neovim",
+	    lazy = false,
+        priority = 1000,
+        name = "rose-pine",
+    },
+    { 
+        "EdenEast/nightfox.nvim",
+        lazy = false,
+        priority = 1000,
+        config = function()
+            require('nightfox').setup({
+                options = {
+                     transparent = true;
+                }
+                           
+            })     
+        end
+    },
+    {
+        "scottmckendry/cyberdream.nvim",
+        lazy = false,
+        priority = 1000,
+        
+        config = function()
+            require('cyberdream').setup({
+                transparent = true;
+            })     
         end
     }
 }

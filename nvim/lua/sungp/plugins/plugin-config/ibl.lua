@@ -22,7 +22,7 @@ return {
         -- Scope configuration
         scope = {
             enabled = true,
-            char = "|",
+            char = "|" ,
             show_start = true,
             show_end = false,
             injected_languages = true,
@@ -38,7 +38,7 @@ return {
 
         -- Indentation configuration
         indent = {
-            char = "|",
+            char = "|" ,
             tab_char = "|",
             highlight = "IndentBlanklineChar",
             smart_indent_cap = true,
