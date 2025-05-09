@@ -1,3 +1,7 @@
+-- TODO:
+-- HACK:
+-- WARN:
+
 return {
     {
         "folke/tokyonight.nvim",
