@@ -12,20 +12,15 @@ return {
 			version = "v2.*",
 			build = "make install_jsregexp",
 		},
-		{
-			"roobert/tailwindcss-colorizer-cmp.nvim",
-			opts = {}, -- optional config
-		},
 	},
 	config = function()
 		local cmp = require("cmp")
 		local luasnip = require("luasnip")
 		local lspkind = require("lspkind")
+		local tailwindcss = require("tailwind-tools.cmp")
 
 		-- Load friendly snippets
 		require("luasnip.loaders.from_vscode").lazy_load()
-
-		local tailwind_formatter = require("tailwindcss-colorizer-cmp").formatter
 
 		cmp.setup({
 			completion = { completeopt = "menu,menuone,preview,noselect" },
@@ -54,13 +49,18 @@ return {
 			}),
 
 			formatting = {
-				format = function(entry, item)
-					item = lspkind.cmp_format({
-						maxwidth = 50,
-						ellipsis_char = "...",
-					})(entry, item)
-					return tailwind_formatter(entry, item)
-				end,
+				format = lspkind.cmp_format({
+					mode = "symbol_text",
+					maxwidth = 50,
+					ellipsis_char = "...",
+					before = tailwindcss.lspkind_format, -- Inject tailwindcss style before lspkind formatting
+					menu = {
+						buffer = "[Buffer]",
+						nvim_lsp = "[LSP]",
+						luasnip = "[LuaSnip]",
+						path = "[Path]",
+					},
+				}),
 			},
 		})
 	end,

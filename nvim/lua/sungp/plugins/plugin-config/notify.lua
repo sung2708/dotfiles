@@ -1,5 +1,6 @@
 return {
 	"rcarriga/nvim-notify", -- Plugin for displaying notifications
+	event = "VeryLazy", -- Load the plugin lazily
 	opts = {
 		background_colour = "#ffffff", -- Background color (match Dracula theme or custom color)
 		stages = "fade_in_slide_out", -- Animation style for notifications

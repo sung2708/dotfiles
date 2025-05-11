@@ -6,6 +6,7 @@ return {
 			"nvim-tree/nvim-web-devicons",
 			"folke/todo-comments.nvim",
 		},
+		event = "VeryLazy",
 		opts = {
 			auto_preview = false, -- Disable auto preview
 			auto_fold = true, -- Automatically fold entries

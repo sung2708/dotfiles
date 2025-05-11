@@ -5,6 +5,7 @@ return {
 		{ "antosha417/nvim-lsp-file-operations", config = true },
 		{ "folke/neodev.nvim", opts = {} },
 	},
+	event = { "BufReadPre", "BufNewFile" },
 	config = function()
 		local lspconfig = require("lspconfig")
 		local mason_lspconfig = require("mason-lspconfig")
@@ -119,24 +120,30 @@ return {
 			end,
 
 			["tailwindcss"] = function()
-				local default_config = require("lspconfig.server_configurations.tailwindcss").default_config
-
-				local filetypes = vim.tbl_filter(function(ft)
-					return ft ~= "markdown" -- exclude markdown
-				end, default_config.filetypes)
-
-				-- Add additional filetypes if needed
-				vim.list_extend(filetypes, { "ejs", "hbs" })
-
 				lspconfig.tailwindcss.setup({
 					capabilities = capabilities,
-					filetypes = filetypes,
+					filetypes = {
+						"html",
+						"css",
+						"scss",
+						"javascript",
+						"javascriptreact",
+						"typescript",
+						"typescriptreact",
+						"ejs",
+						"hbs",
+					},
 					settings = {
 						tailwindCSS = {
 							includeLanguages = {
 								elixir = "html-eex",
 								eelixir = "html-eex",
 								heex = "html-eex",
+							},
+							experimental = {
+								classRegex = {
+									{ "tw`([^`]*)", "tw\\(([^)]*)", "cn\\(([^)]*)" }, -- hỗ trợ tailwind macro
+								},
 							},
 						},
 					},
