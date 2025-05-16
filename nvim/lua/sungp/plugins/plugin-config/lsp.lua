@@ -4,27 +4,28 @@ return {
 		"hrsh7th/cmp-nvim-lsp",
 		{ "antosha417/nvim-lsp-file-operations", config = true },
 		{ "folke/neodev.nvim", opts = {} },
+		"b0o/schemastore.nvim",
 	},
 	event = { "BufReadPre", "BufNewFile" },
 	config = function()
 		local lspconfig = require("lspconfig")
-		local mason_lspconfig = require("mason-lspconfig")
 		local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
 		local capabilities = cmp_nvim_lsp.default_capabilities()
 
-		-- Diagnostic signs
-		for type, icon in pairs({
+		-- Diagnostic signs with new API (avoid deprecated warning)
+		local signs = {
 			Error = "",
 			Warning = "",
 			Hint = "󰌵",
 			Information = "",
-		}) do
+		}
+		for type, icon in pairs(signs) do
 			local hl = "DiagnosticSign" .. type
 			vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 		end
 
-		-- LSP keymaps
+		-- LSP keymaps on attach
 		vim.api.nvim_create_autocmd("LspAttach", {
 			group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 			callback = function(ev)
@@ -38,117 +39,92 @@ return {
 					"<cmd>Telescope lsp_implementations<CR>",
 					{ desc = "LSP implementations", unpack(opts) }
 				)
-				keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", { desc = "Hover", unpack(opts) })
-				keymap("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", { desc = "Rename", unpack(opts) })
-				keymap(
-					"n",
-					"<leader>ca",
-					"<cmd>lua vim.lsp.buf.code_action()<CR>",
-					{ desc = "Code Action", unpack(opts) }
-				)
+				keymap("n", "K", vim.lsp.buf.hover, { desc = "Hover", unpack(opts) })
+				keymap("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename", unpack(opts) })
+				keymap("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action", unpack(opts) })
 			end,
 		})
 
-		-- LSP setup
-		mason_lspconfig.setup_handlers({
-			function(server_name)
-				lspconfig[server_name].setup({
-					capabilities = capabilities,
-				})
-			end,
+		-- Setup servers
+		lspconfig.lua_ls.setup({
+			capabilities = capabilities,
+			settings = {
+				Lua = {
+					runtime = { version = "LuaJIT" },
+					diagnostics = { globals = { "vim" } },
+					workspace = {
+						library = vim.api.nvim_get_runtime_file("", true),
+						checkThirdParty = false,
+					},
+					telemetry = { enable = false },
+				},
+			},
+		})
 
-			["clangd"] = function()
-				lspconfig.clangd.setup({
-					capabilities = capabilities,
-					cmd = { "clangd", "--background-index", "--header-insertion=never" },
-				})
-			end,
+		lspconfig.clangd.setup({
+			capabilities = capabilities,
+			cmd = { "clangd", "--background-index", "--header-insertion=never" },
+		})
 
-			["lua_ls"] = function()
-				lspconfig.lua_ls.setup({
-					capabilities = capabilities,
-					settings = {
-						Lua = {
-							runtime = { version = "LuaJIT" },
-							diagnostics = { globals = { "vim" } },
-							workspace = {
-								library = vim.api.nvim_get_runtime_file("", true),
-								checkThirdParty = false,
-							},
-							telemetry = { enable = false },
+		lspconfig.pyright.setup({
+			capabilities = capabilities,
+			settings = {
+				python = {
+					analysis = {
+						typeCheckingMode = "strict",
+						autoSearchPaths = true,
+						useLibraryCodeForTypes = true,
+					},
+				},
+			},
+		})
+
+		lspconfig.ts_ls.setup({
+			capabilities = capabilities,
+			settings = {
+				completions = {
+					completeFunctionCalls = true,
+				},
+			},
+		})
+
+		lspconfig.jsonls.setup({
+			capabilities = capabilities,
+			settings = {
+				json = {
+					schemas = require("schemastore").json.schemas(),
+					validate = { enable = true },
+				},
+			},
+		})
+
+		lspconfig.tailwindcss.setup({
+			capabilities = capabilities,
+			filetypes = {
+				"html",
+				"css",
+				"scss",
+				"javascript",
+				"javascriptreact",
+				"typescript",
+				"typescriptreact",
+				"ejs",
+				"hbs",
+			},
+			settings = {
+				tailwindCSS = {
+					includeLanguages = {
+						elixir = "html-eex",
+						eelixir = "html-eex",
+						heex = "html-eex",
+					},
+					experimental = {
+						classRegex = {
+							{ "tw`([^`]*)", "tw\\(([^)]*)", "cn\\(([^)]*)" }, -- support tailwind macro
 						},
 					},
-				})
-			end,
-
-			["pyright"] = function()
-				lspconfig.pyright.setup({
-					capabilities = capabilities,
-					settings = {
-						python = {
-							analysis = {
-								typeCheckingMode = "strict",
-								autoSearchPaths = true,
-								useLibraryCodeForTypes = true,
-							},
-						},
-					},
-				})
-			end,
-
-			["ts_ls"] = function()
-				lspconfig.ts_ls.setup({
-					capabilities = capabilities,
-					settings = {
-						completions = {
-							completeFunctionCalls = true,
-						},
-					},
-				})
-			end,
-
-			["jsonls"] = function()
-				lspconfig.jsonls.setup({
-					capabilities = capabilities,
-					settings = {
-						json = {
-							schemas = require("schemastore").json.schemas(),
-							validate = { enable = true },
-						},
-					},
-				})
-			end,
-
-			["tailwindcss"] = function()
-				lspconfig.tailwindcss.setup({
-					capabilities = capabilities,
-					filetypes = {
-						"html",
-						"css",
-						"scss",
-						"javascript",
-						"javascriptreact",
-						"typescript",
-						"typescriptreact",
-						"ejs",
-						"hbs",
-					},
-					settings = {
-						tailwindCSS = {
-							includeLanguages = {
-								elixir = "html-eex",
-								eelixir = "html-eex",
-								heex = "html-eex",
-							},
-							experimental = {
-								classRegex = {
-									{ "tw`([^`]*)", "tw\\(([^)]*)", "cn\\(([^)]*)" }, -- hỗ trợ tailwind macro
-								},
-							},
-						},
-					},
-				})
-			end,
+				},
+			},
 		})
 	end,
 }

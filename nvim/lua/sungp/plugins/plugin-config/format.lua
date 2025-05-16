@@ -1,48 +1,54 @@
--- Formatter and Linter Configuration with null-ls
 return {
-	"jose-elias-alvarez/null-ls.nvim",
+	{
+		"nvimtools/none-ls.nvim",
+		event = "VeryLazy",
+		dependencies = {
+			"nvimtools/none-ls-extras.nvim",
+		},
+		config = function()
+			local null_ls = require("null-ls")
 
-	event = "VeryLazy",
+			local eslint_d_fmt = require("none-ls.formatting.eslint_d")
+			local eslint_diag = require("none-ls.diagnostics.eslint")
 
-	config = function()
-		local null_ls = require("null-ls")
+			local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
-		-- Autocmd group for formatting on save
-		local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+			null_ls.setup({
+				sources = {
+					-- Formatters
+					null_ls.builtins.formatting.prettier, -- JS, TS, HTML, CSS
+					eslint_d_fmt, -- ESLint_d
+					null_ls.builtins.formatting.clang_format, -- C/C++
+					null_ls.builtins.formatting.golines, -- Go
+					null_ls.builtins.formatting.stylua, -- Lua
+					null_ls.builtins.formatting.black, -- Python
+					null_ls.builtins.formatting.isort, -- Python import sorter
 
-		null_ls.setup({
-			sources = {
-				-- Formatters
-				null_ls.builtins.formatting.prettier, -- JavaScript/TypeScript/HTML/CSS
-				null_ls.builtins.formatting.eslint_d, -- ESLint as formatter
-				null_ls.builtins.formatting.clang_format, -- C/C++
-				null_ls.builtins.formatting.golines, -- Go
-				null_ls.builtins.formatting.stylua, -- Lua
-				null_ls.builtins.formatting.black, -- Python
-				null_ls.builtins.formatting.isort, -- Python import sorter
-
-				-- Linters / Diagnostics
-				null_ls.builtins.diagnostics.eslint_d.with({
-					diagnostics_format = "[eslint] #{m} (#{c})",
-					condition = function(utils)
-						return utils.root_has_file({ ".eslintrc.js", "eslint.config.js", ".eslintrc.json" })
-					end,
-				}),
-			},
-
-			-- Format on save
-			on_attach = function(client, bufnr)
-				if client.supports_method("textDocument/formatting") then
-					vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-					vim.api.nvim_create_autocmd("BufWritePre", {
-						group = augroup,
-						buffer = bufnr,
-						callback = function()
-							vim.lsp.buf.format({ bufnr = bufnr })
+					-- Linters
+					eslint_diag.with({
+						diagnostics_format = "[eslint] #{m} (#{c})",
+						condition = function(utils)
+							return utils.root_has_file({
+								".eslintrc.js",
+								"eslint.config.js",
+								".eslintrc.json",
+							})
 						end,
-					})
-				end
-			end,
-		})
-	end,
+					}),
+				},
+				on_attach = function(client, bufnr)
+					if client.supports_method("textDocument/formatting") then
+						vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+						vim.api.nvim_create_autocmd("BufWritePre", {
+							group = augroup,
+							buffer = bufnr,
+							callback = function()
+								vim.lsp.buf.format({ bufnr = bufnr })
+							end,
+						})
+					end
+				end,
+			})
+		end,
+	},
 }

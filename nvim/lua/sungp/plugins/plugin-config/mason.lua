@@ -1,4 +1,3 @@
--- Mason core UI configuration
 return {
 	-- Mason core UI configuration
 	{
@@ -23,10 +22,13 @@ return {
 		config = function()
 			local mason_lspconfig = require("mason-lspconfig")
 
-			-- Ensure required LSP servers are installed
 			mason_lspconfig.setup({
 				ensure_installed = { "lua_ls", "clangd", "gopls", "pyright", "ts_ls" },
+				automatic_installation = false,
 			})
+
+			-- Không dùng setup_handlers nữa,
+			-- việc setup từng server sẽ làm trong file cấu hình lsp.lua riêng biệt
 		end,
 	},
 
