@@ -2,26 +2,21 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
+		event = { "BufReadPost", "BufNewFile" },
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 		},
-		event = { "BufReadPost", "BufNewFile" },
 		config = function()
 			require("nvim-treesitter.configs").setup({
 				ensure_installed = {
-					"python",
-					"javascript",
-					"typescript",
-					"tsx",
-					"html",
-					"css",
-					"json",
-					"yaml",
-					"lua",
-					"bash",
 					"c",
 					"cpp",
 					"java",
+					"lua",
+					"python",
+					"vim",
+					"markdown",
+					"markdown_inline",
 				},
 				highlight = {
 					enable = true,
@@ -49,7 +44,7 @@ return {
 							["if"] = "@function.inner",
 							["ac"] = "@class.outer",
 							["ic"] = "@class.inner",
-							-- Custom: Select If / For / While
+							-- Conditional / Loop / Comment
 							["ai"] = "@conditional.outer",
 							["ii"] = "@conditional.inner",
 							["al"] = "@loop.outer",

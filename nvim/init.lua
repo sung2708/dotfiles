@@ -1,8 +1,10 @@
-vim.notify = function(msg, log_level, _)
+local original_notify = vim.notify
+
+vim.notify = function(msg, log_level, opts)
 	if msg:match("nvim%-ts%-autotag: Using the legacy setup opts!") then
 		return
 	end
-	vim.notify(msg, log_level)
+	original_notify(msg, log_level, opts)
 end
 
 require("sungp.config.settings")
