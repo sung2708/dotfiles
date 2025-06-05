@@ -22,14 +22,17 @@ return {
 				left_trunc_marker = "",
 				right_trunc_marker = "",
 
-				-- Diagnostics (Coc.nvim integration)
-				diagnostics = "coc", -- Use Coc.nvim for diagnostics
-				diagnostics_update_in_insert = false, -- Update diagnostics outside insert mode
-				diagnostics_indicator = function(_, _, diagnostics_dict)
+				-- Diagnostics (LSP integration)
+				diagnostics = "nvim_lsp", -- Use built-in LSP for diagnostics
+				diagnostics_update_in_insert = false,
+				diagnostics_indicator = function(_, _, diagnostics_dict, _)
 					local result = ""
 					for severity, count in pairs(diagnostics_dict) do
-						local icon = severity == "error" and " " or severity == "warning" and " " or " "
-						result = result .. count .. icon
+						local icon = (severity == "error" and " ")
+							or (severity == "warning" and " ")
+							or (severity == "info" and " ")
+							or ""
+						result = result .. icon .. count .. " "
 					end
 					return result
 				end,
@@ -69,35 +72,30 @@ return {
 		})
 
 		-- Key mappings for bufferline
-		vim.keymap.set(
-			"n",
-			"<leader>bn",
-			":BufferLineCycleNext<CR>",
-			{ silent = true, noremap = true, desc = "Next buffer" }
-		)
-		vim.keymap.set(
-			"n",
-			"<leader>bp",
-			":BufferLineCyclePrev<CR>",
-			{ silent = true, noremap = true, desc = "Previous buffer" }
-		)
-		vim.keymap.set(
-			"n",
-			"<leader>bd",
-			":BufferLineCloseRight<CR>",
-			{ silent = true, noremap = true, desc = "Close buffers to the right" }
-		)
-		vim.keymap.set(
-			"n",
-			"<leader>bl",
-			":BufferLineCloseLeft<CR>",
-			{ silent = true, noremap = true, desc = "Close buffers to the left" }
-		)
-		vim.keymap.set(
-			"n",
-			"<leader>bb",
-			":BufferLinePick<CR>",
-			{ silent = true, noremap = true, desc = "Pick buffer by number" }
-		)
+		vim.keymap.set("n", "<leader>bn", ":BufferLineCycleNext<CR>", {
+			silent = true,
+			noremap = true,
+			desc = "Next buffer",
+		})
+		vim.keymap.set("n", "<leader>bp", ":BufferLineCyclePrev<CR>", {
+			silent = true,
+			noremap = true,
+			desc = "Previous buffer",
+		})
+		vim.keymap.set("n", "<leader>bd", ":BufferLineCloseRight<CR>", {
+			silent = true,
+			noremap = true,
+			desc = "Close buffers to the right",
+		})
+		vim.keymap.set("n", "<leader>bl", ":BufferLineCloseLeft<CR>", {
+			silent = true,
+			noremap = true,
+			desc = "Close buffers to the left",
+		})
+		vim.keymap.set("n", "<leader>bb", ":BufferLinePick<CR>", {
+			silent = true,
+			noremap = true,
+			desc = "Pick buffer by number",
+		})
 	end,
 }

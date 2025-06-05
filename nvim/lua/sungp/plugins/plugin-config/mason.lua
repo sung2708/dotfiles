@@ -10,6 +10,7 @@ return {
 						package_pending = "",
 						package_uninstalled = "✗",
 					},
+					border = "rounded", -- Use rounded borders for the Mason UI
 				},
 			})
 		end,
@@ -23,12 +24,9 @@ return {
 			local mason_lspconfig = require("mason-lspconfig")
 
 			mason_lspconfig.setup({
-				ensure_installed = { "lua_ls", "clangd", "gopls", "pyright", "ts_ls" },
+				ensure_installed = { "lua_ls", "clangd", "gopls", "pyright", "ts_ls", "golangci-lint" },
 				automatic_installation = false,
 			})
-
-			-- Không dùng setup_handlers nữa,
-			-- việc setup từng server sẽ làm trong file cấu hình lsp.lua riêng biệt
 		end,
 	},
 
@@ -41,11 +39,10 @@ return {
 				ensure_installed = {
 					"prettier",
 					"stylua",
-					"pylint",
 					"eslint_d",
-					"golangci-lint",
 					"black",
 					"isort",
+					"golangci-lint",
 				},
 			})
 		end,
