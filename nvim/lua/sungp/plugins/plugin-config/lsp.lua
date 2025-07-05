@@ -50,9 +50,16 @@ return {
                     "<cmd>Telescope lsp_implementations<CR>",
                     { desc = "LSP implementations", unpack(opts) }
                 )
-                keymap("n", "K", vim.lsp.buf.hover, { desc = "Hover", unpack(opts) })
-                keymap("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename", unpack(opts) })
-                keymap("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action", unpack(opts) })
+                vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover", noremap = true, silent = true })
+                vim.keymap.set(
+                    "n",
+                    "<leader>rn",
+                    vim.lsp.buf.rename,
+                    { desc = "Rename", noremap = true, silent = true }
+                )
+                vim.keymap.set({ "n", "x" }, "<leader>ca", function()
+                    require("tiny-code-action").code_action()
+                end, { desc = "Code Action", noremap = true, silent = true })
             end,
         })
 

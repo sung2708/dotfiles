@@ -24,7 +24,7 @@ return {
 			local mason_lspconfig = require("mason-lspconfig")
 
 			mason_lspconfig.setup({
-				ensure_installed = { "lua_ls", "clangd", "gopls", "pyright", "ts_ls", "golangci-lint" },
+				ensure_installed = { "lua_ls", "clangd", "gopls", "pyright", "ts_ls" },
 				automatic_installation = false,
 			})
 		end,
