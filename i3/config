@@ -8,7 +8,7 @@ exec --no-startup-id nm-applet
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 exec_always feh --bg-scale /home/sungp/Downloads/thumb-1920-1382257.png
-exec_always --no-startup-id picom --experimental-backends
+exec_always --no-startup-id /nix/store/13hqs4xm1z34b3pasdabgx2bpgpwiyrg-picom-pijulius-8.2-unstable-2025-03-01/bin/picom --config ~/.config/picom.conf
 
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && $refresh_i3status

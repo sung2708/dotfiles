@@ -65,6 +65,7 @@ return {
 
         -- Lua (Neovim config)
         lspconfig.lua_ls.setup({
+            cmd = { "/run/current-system/sw/bin/lua-language-server" },
             capabilities = capabilities,
             settings = {
                 Lua = {
