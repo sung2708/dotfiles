@@ -1,6 +1,9 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+# snapd
+export PATH="$PATH:/snap/bin"
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -48,7 +51,7 @@ export FZF_DEFAULT_OPTS="
 "
 
 # bat 
-show_file_or_dir_preview="if [ -d {} ]; then eza --tree --color=always {} | head -200; else batcat -n --color=always --line-range :500 {}; fi"
+show_file_or_dir_preview="if [ -d {} ]; then eza --tree --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi"
 
 export FZF_CTRL_T_OPTS="--preview '$show_file_or_dir_preview'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
@@ -72,7 +75,7 @@ eval $(thefuck --alias)
 export PATH=$PATH:/home/sungp/go/bin
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
-
+pokemon-colorscripts --no-title -s -r | fastfetch -c $HOME/.config/fastfetch/config-pokemon.jsonc --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -134,6 +137,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git
+        archlinux
         zsh-autosuggestions
         zsh-syntax-highlighting
         zsh-fzf-history-search
@@ -182,7 +186,6 @@ alias s='source ~/.zshrc'
 alias zsh='cd ~ && nvim sungp/dotfiles/zsh/.zshrc'
 alias nv='cd ~ && sungp/dotfiles/nvim/'
 alias nw='cd ~ && nvim sungp/dotfiles/wezterm/wezterm.lua'
-#alias bat='batcat'
 alias e='exit'
 alias .files='cd ~ && cd sungp/dotfiles'
 alias nt='cd ~ && nvim sungp/dotfiles/tmux/.tmux.conf'
@@ -190,3 +193,4 @@ alias ls='eza --color=always --long --git --no-permissions --header --sort=modif
 alias tree='eza --tree --level=3 --icons=always'
 alias f='fuck'
 alias gmc='git commit -m'
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet

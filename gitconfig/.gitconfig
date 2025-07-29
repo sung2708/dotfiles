@@ -1,0 +1,33 @@
+# name = sungp2708
+
+[user]
+    name = sung2708
+    email = aki8082002@gmail.com
+
+[core]
+    editor = nvim
+	pager = delta
+
+[init]
+    defaultBranch = main
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    negative = true
+    syntax-theme = "Catppuccin Mocha"
+    line-numbers = true
+    side-by-side = true
+    line-numbers-left-format = ""
+    line-numbers-right-format = "│ "
+
+
+[merge]
+    tool = nvim
+    conflictstyle = diff3
+
+[diff]
+    tool = nvim
+    context = 3
+    colorMoved = true
