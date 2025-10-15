@@ -8,115 +8,6 @@ return {
 
 	config = function()
 		require("noice").setup({
-			cmdline = {
-				enabled = true,
-				view = "cmdline_popup",
-				opts = {
-					position = { row = 10, col = 0.5 },
-				},
-				format = {
-					cmdline = { pattern = "^:", icon = ">", lang = "vim" },
-					search_down = { kind = "search", pattern = "^/", icon = "↓", lang = "regex" },
-					search_up = { kind = "search", pattern = "^%?", icon = "↑", lang = "regex" },
-					filter = { pattern = "^:%s*!", icon = "!", lang = "bash" },
-					lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
-					help = { pattern = "^:%s*he?l?p?%s+", icon = "?", lang = "help" },
-					input = { view = "cmdline_input", icon = "" },
-				},
-			},
-
-			messages = {
-				enabled = true,
-				view = "notify",
-				view_error = "notify",
-				view_warn = "notify",
-				view_history = "messages",
-				view_search = "virtualtext",
-			},
-
-			popupmenu = {
-				enabled = true,
-				backend = "nui",
-				kind_icons = {
-					Text = "󱩼 ",
-					Method = " ",
-					Function = "",
-					Constructor = "󰡢",
-					Field = "󰌪",
-					Variable = "",
-					Class = "󱉟 ",
-					Interface = " ",
-					Module = "󰕳",
-					Property = "󰧰",
-					Unit = "⚙️",
-					Value = "󰼜",
-					Enum = "",
-					Keyword = "",
-					Snippet = "✂️",
-					Color = "",
-					File = "",
-					Reference = "",
-					Folder = "",
-					EnumMember = "",
-					Constant = "󰌾",
-					Struct = "",
-					Event = "󰸰",
-					Operator = "",
-					TypeParameter = "󰉺",
-				},
-			},
-
-			redirect = {
-				view = "popup",
-				filter = { event = "msg_show" },
-			},
-
-			notify = {
-				enabled = true,
-				view = "notify",
-			},
-
-			commands = {
-				history = {
-					view = "split",
-					opts = { enter = true, format = "details" },
-					filter = {
-						any = {
-							{ event = "notify" },
-							{ error = true },
-							{ warning = true },
-							{ event = "msg_show", kind = { "" } },
-							{ event = "lsp", kind = "message" },
-						},
-					},
-				},
-				last = {
-					view = "popup",
-					opts = { enter = true, format = "details" },
-					filter = {
-						any = {
-							{ event = "notify" },
-							{ error = true },
-							{ warning = true },
-							{ event = "msg_show", kind = { "" } },
-							{ event = "lsp", kind = "message" },
-						},
-					},
-					filter_opts = { count = 1 },
-				},
-				errors = {
-					view = "popup",
-					opts = { enter = true, format = "details" },
-					filter = { error = true },
-					filter_opts = { reverse = true },
-				},
-				all = {
-					view = "split",
-					opts = { enter = true, format = "details" },
-					filter = {},
-				},
-			},
-
 			lsp = {
 				progress = {
 					enabled = true,
@@ -157,6 +48,7 @@ return {
 						win_options = {
 							concealcursor = "n",
 							conceallevel = 3,
+							winblend = 10, -- Transparent hover documentation
 						},
 					},
 				},
@@ -197,6 +89,7 @@ return {
 					},
 					win_options = {
 						winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+						winblend = 10,
 					},
 				},
 				cmdline_popup = {
@@ -214,6 +107,7 @@ return {
 					},
 					win_options = {
 						winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+						winblend = 10,
 					},
 				},
 				popupmenu = {
@@ -232,6 +126,7 @@ return {
 					},
 					win_options = {
 						winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+						winblend = 10,
 					},
 				},
 				hover = {
@@ -241,6 +136,7 @@ return {
 					},
 					win_options = {
 						winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+						winblend = 10,
 					},
 				},
 			},
@@ -273,5 +169,11 @@ return {
 		map("n", "<leader>nl", "<cmd>NoiceLast<CR>", vim.tbl_extend("force", opts, { desc = "View last message" }))
 		map("n", "<leader>ne", "<cmd>NoiceErrors<CR>", vim.tbl_extend("force", opts, { desc = "View error messages" }))
 		map("n", "<leader>na", "<cmd>NoiceAll<CR>", vim.tbl_extend("force", opts, { desc = "View all messages" }))
+
+		-- Transparent background for floating windows
+		vim.cmd([[
+      highlight NormalFloat guibg=NONE
+      highlight FloatBorder guibg=NONE
+    ]])
 	end,
 }

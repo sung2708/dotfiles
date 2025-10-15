@@ -9,12 +9,13 @@ config.font = wezterm.font("JetBrains Mono", { weight = "Bold", italic = true })
 config.font_size = 11
 
 -- Appearance settings
-config.window_background_opacity = 0.75
--- config.window_background_image = '/home/sungp/.config/wezterm/bg.jpg'  -- Set background image
--- config.window_background_image_hsb = {
---  brightness = 0.3,  -- Adjust brightness of the background
---  hue = 1.0,        -- Adjust the hue of the background
---  saturation = 1.0,  -- Adjust the saturation of the background
+-- config.window_background_opacity = 0.95
+-- config.text_background_opacity = 0.1
+--config.window_background_image = "/home/sungp/.config/wezterm/bg1.jpeg" -- Set background image
+--config.window_background_image_hsb = {
+--	brightness = 0.1, -- Adjust brightness of the background
+--	hue = 1.0, -- Adjust the hue of the background
+--	saturation = 1.0, -- Adjust the saturation of the background
 --}
 
 config.default_cursor_style = "SteadyBar"
@@ -30,7 +31,7 @@ config.cursor_blink_ease_out = "Constant"
 
 -- Set color scheme (make sure 'Catppuccin Frappé (Gogh)' is installed)
 config.color_scheme = "Catppuccin Mocha"
-
+--config.color_scheme = "One Dark (Gogh)"
 -- Key bindings for copy and paste
 config.keys = {
 	-- Copy with Ctrl + Shift + C

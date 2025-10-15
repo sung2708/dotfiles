@@ -10,14 +10,19 @@ return {
 	},
 
 	config = function()
+		-- Load Telescope
 		local telescope_ok, telescope = pcall(require, "telescope")
 		if not telescope_ok then
 			return
 		end
 
+		-- Load actions for Telescope
 		local actions = require("telescope.actions")
+
+		-- Check if Trouble plugin is available
 		local trouble_ok, trouble = pcall(require, "trouble.sources.telescope")
 
+		-- Setup Telescope with your configuration
 		telescope.setup({
 			defaults = {
 				prompt_prefix = " ",
@@ -33,6 +38,7 @@ return {
 					},
 				},
 
+				-- Keymaps for telescope actions
 				mappings = {
 					i = {
 						["<C-n>"] = actions.cycle_history_next,
@@ -40,20 +46,20 @@ return {
 						["<C-j>"] = actions.move_selection_next,
 						["<C-k>"] = actions.move_selection_previous,
 						["<C-c>"] = actions.close,
-						["<C-t>"] = trouble_ok and trouble.open or nil,
+						["<C-t>"] = trouble_ok and trouble.open or nil, -- Only bind trouble if available
 						["<C-u>"] = actions.preview_scrolling_up,
 						["<C-d>"] = actions.preview_scrolling_down,
-						["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-						["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
+						["<Tab>"] = actions.toggle_selection, -- Fixed invalid combination
+						["<S-Tab>"] = actions.move_selection_previous, -- No need for `toggle_selection`
 						["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
 						["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
 						["<C-_>"] = actions.which_key,
 					},
 					n = {
 						["<esc>"] = actions.close,
-						["<C-t>"] = trouble_ok and trouble.open or nil,
-						["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-						["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
+						["<C-t>"] = trouble_ok and trouble.open or nil, -- Only bind trouble if available
+						["<Tab>"] = actions.toggle_selection, -- Fixed invalid combination
+						["<S-Tab>"] = actions.move_selection_previous, -- No need for `toggle_selection`
 						["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
 						["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
 						["?"] = actions.which_key,
@@ -61,6 +67,7 @@ return {
 				},
 			},
 
+			-- Extensions
 			extensions = {
 				fzf = {
 					fuzzy = true,
@@ -77,15 +84,16 @@ return {
 			},
 		})
 
-		-- Load extensions
+		-- Load extensions explicitly
 		telescope.load_extension("fzf")
 		telescope.load_extension("file_browser")
 		telescope.load_extension("ui-select")
 
-		-- Telescope Keymaps
+		-- Define Keymaps
 		local map = vim.keymap.set
 		local opts = { silent = true, noremap = true }
 
+		-- Telescope Keybindings
 		map("n", "<leader>ff", "<cmd>Telescope find_files<cr>", opts)
 		map("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", opts)
 		map("n", "<leader>fc", "<cmd>Telescope grep_string<cr>", opts)

@@ -1,6 +1,7 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+export EDITOR="nvim"
 # snapd
 export PATH="$PATH:/snap/bin"
 
@@ -72,10 +73,21 @@ _fzf_comprun() {
 eval $(thefuck --alias)
 
 # Golines
-export PATH=$PATH:/home/sungp/go/bin
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:$(go env GOPATH)/bin
+
+
+# yazi
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
-pokemon-colorscripts --no-title -s -r | fastfetch -c $HOME/.config/fastfetch/config-pokemon.jsonc --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+# pokemon-colorscripts --no-title -s -r | fastfetch -c $HOME/.config/fastfetch/config-pokemon.jsonc --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -193,4 +205,9 @@ alias ls='eza --color=always --long --git --no-permissions --header --sort=modif
 alias tree='eza --tree --level=3 --icons=always'
 alias f='fuck'
 alias gmc='git commit -m'
+alias y='yazi'
+alias commit='~/scripts/create-commit-setup'
+alias lzg="lazygit"
+alias lzd="lazydocker"
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+export GOLAND_JDK=/usr/lib/jvm/java-21-openjdk-amd64

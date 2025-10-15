@@ -1,14 +1,14 @@
 # ~/.config/i3/config
 
 set $mod Mod1
-font pango:monospace 8
+font pango:JetBrains Mono 8
 
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id nm-applet
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
-exec_always --no-startup-id ~/.config/polybar/launch.sh
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always feh --bg-scale /home/sungp/Downloads/thumb-1920-1382257.png
-exec_always --no-startup-id /nix/store/13hqs4xm1z34b3pasdabgx2bpgpwiyrg-picom-pijulius-8.2-unstable-2025-03-01/bin/picom --config ~/.config/picom.conf
+exec_always --no-startup-id picom --config ~/.config/picom.conf
 
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && $refresh_i3status
@@ -23,10 +23,10 @@ for_window [class=".*"] border pixel 2
 floating_modifier $mod
 tiling_drag modifier titlebar
 
-bindsym $mod+Return exec ghostty
+bindsym $mod+Return exec wezterm
 bindsym $mod+Shift+s exec flameshot gui
 bindsym $mod+d exec rofi -show drun -show-icons
-bindsym $mod+Shift+q kill
+bindsym $mod+q kill
 
 bindsym $mod+j focus left
 bindsym $mod+k focus down
