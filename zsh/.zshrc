@@ -88,14 +88,14 @@ export BAT_THEME="Catppuccin Mocha"
 
 # TheFuck starts Python (~100–600 ms) just to define an alias. Load it the
 # first time you actually type `fuck` (or `f`).
-fuck() {
+function fuck {
   unfunction fuck
   eval "$(thefuck --alias)"
   fuck "$@"
 }
 
 # Yazi: `y` opens yazi and cd's into the folder you were in when you quit.
-y() {
+unalias y 2>/dev/null; function y {
   local tmp cwd
   tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
   yazi "$@" --cwd-file="$tmp"
