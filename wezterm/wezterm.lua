@@ -1,94 +1,94 @@
--- Pull in the wezterm API
 local wezterm = require("wezterm")
-
--- This will hold the configuration
 local config = wezterm.config_builder()
 
--- Font setup
-config.font = wezterm.font("JetBrains Mono", { weight = "Bold", italic = true })
+-- ── Shell: open or attach to the tmux session "sungp" ──────────────────────
+-- Falls back to the login shell if MacPorts tmux is missing, so WezTerm
+-- still opens instead of closing immediately.
+local tmux = "/opt/local/bin/tmux"
+if #wezterm.glob(tmux) > 0 then
+	config.default_prog = { tmux, "new-session", "-A", "-s", "sungp" }
+end
+
+-- ── Rendering ───────────────────────────────────────────────────────────────
+-- WebGpu draws through Metal on macOS; LowPower keeps it on the integrated
+-- GPU (cooler, better battery). Use "HighPerformance" if it ever stutters.
+config.front_end = "WebGpu"
+config.webgpu_power_preference = "LowPower"
+config.max_fps = 120 -- capped by the display anyway
+config.animation_fps = 60
+
+-- ── Font ────────────────────────────────────────────────────────────────────
+-- Regular-weight upright text keeps Bold and Italic meaningful in Neovim
+-- (keywords, comments). Nerd Font icons come from WezTerm's built-in
+-- symbols fallback. For the previous look use:
+--   wezterm.font("JetBrains Mono", { weight = "Bold", italic = true })
+config.font = wezterm.font_with_fallback({
+	{ family = "JetBrains Mono", weight = "Medium" },
+	"Apple Color Emoji",
+})
 config.font_size = 13
+config.line_height = 1.05
+-- Thicker, slightly lower underlines so LSP undercurls are easy to see.
+config.underline_thickness = 2
+config.underline_position = -2
 
--- Appearance settings
--- config.window_background_opacity = 0.95
--- config.text_background_opacity = 0.1
---config.window_background_image = "/home/sungphan/.config/wezterm/bg.jpg"-- Set background image
--- No background image is set above, so this has no effect until one is enabled
--- config.window_background_image_hsb = {
--- 	brightness = 0.1, -- Adjust brightness of the background
--- 	hue = 1.0, -- Adjust the hue of the background
--- 	saturation = 1.0, -- Adjust the saturation of the background
--- }
-
--- Use PowerShell 7 (pwsh) as the default shell
-config.default_prog = { "C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoLogo" }
-
-config.default_cursor_style = "SteadyBar"
--- Fallback size only (used if gui-startup/gui-attached maximize below doesn't fire,
--- e.g. reconnecting to a domain). The window is auto-maximized on real startup,
--- so it always fits the actual screen's work area (excludes the taskbar) on any
--- resolution/aspect ratio instead of being fixed to one monitor's size.
+-- ── Window ──────────────────────────────────────────────────────────────────
+-- 0.80 let the wallpaper wash out dark themes (indent guides and line
+-- numbers disappeared in Neovim). 0.90 keeps the glass look but stays legible.
+config.window_background_opacity = 0.90
+config.macos_window_background_blur = 20
+config.window_decorations = "RESIZE"
+config.window_padding = { left = 6, right = 6, top = 4, bottom = 0 }
+config.enable_tab_bar = false -- tmux provides windows and panes
 config.initial_cols = 120
 config.initial_rows = 30
+config.adjust_window_size_when_changing_font_size = false
+config.window_close_confirmation = "NeverPrompt" -- the tmux session survives
+config.audible_bell = "Disabled"
 
-config.enable_tab_bar = false -- Disable the tab bar
-config.window_decorations = "RESIZE" -- Set window decorations to allow resizing
+-- ── Cursor ──────────────────────────────────────────────────────────────────
+config.default_cursor_style = "SteadyBar"
 
-config.animation_fps = 1
-config.cursor_blink_ease_in = "Constant"
-config.cursor_blink_ease_out = "Constant"
-
--- Set color scheme (make sure 'Catppuccin Frappé (Gogh)' is installed)
+-- ── Colours: match the Neovim theme (Catppuccin Mocha) ─────────────────────
+-- Built-in scheme instead of the Gogh port; the overrides below already use
+-- the Mocha palette.
 config.color_scheme = "Catppuccin Mocha"
---config.color_scheme = "One Dark (Gogh)"
-
--- Search / Copy Mode / Quick Select highlight colors (matched to Catppuccin Mocha)
+-- config.color_scheme = "Tokyo Night"
+-- config.color_scheme = "Kanagawa (Gogh)"
 config.colors = {
-	-- Current active search match (also used for normal text selection)
-	selection_fg = "#1e1e2e", -- Mocha Base
-	selection_bg = "#f9e2af", -- Mocha Yellow
+	selection_fg = "#1e1e2e",
+	selection_bg = "#f9e2af",
 
-	-- Extra highlight when adding to the selection with the mouse in Copy Mode
-	copy_mode_active_highlight_fg = { Color = "#1e1e2e" }, -- Mocha Base
-	copy_mode_active_highlight_bg = { Color = "#fab387" }, -- Mocha Peach
+	copy_mode_active_highlight_fg = { Color = "#1e1e2e" },
+	copy_mode_active_highlight_bg = { Color = "#fab387" },
 
-	-- Other (non-active) search matches
-	copy_mode_inactive_highlight_fg = { Color = "#cdd6f4" }, -- Mocha Text
-	copy_mode_inactive_highlight_bg = { Color = "#585b70" }, -- Mocha Surface2
+	copy_mode_inactive_highlight_fg = { Color = "#cdd6f4" },
+	copy_mode_inactive_highlight_bg = { Color = "#585b70" },
 
-	-- Quick Select overlay (Ctrl+Shift+Space) labels/matches
-	quick_select_label_fg = { Color = "#1e1e2e" }, -- Mocha Base
-	quick_select_label_bg = { Color = "#cba6f7" }, -- Mocha Mauve
-	quick_select_match_fg = { Color = "#1e1e2e" }, -- Mocha Base
-	quick_select_match_bg = { Color = "#a6e3a1" }, -- Mocha Green
+	quick_select_label_fg = { Color = "#1e1e2e" },
+	quick_select_label_bg = { Color = "#cba6f7" },
+	quick_select_match_fg = { Color = "#1e1e2e" },
+	quick_select_match_bg = { Color = "#a6e3a1" },
 }
 
--- Key bindings for copy and paste
+-- ── Keyboard ────────────────────────────────────────────────────────────────
+-- Left Option sends Alt/Meta (Neovim uses Alt+h/j/k/l, Alt+n, Alt+]...);
+-- right Option still types accented characters.
+config.send_composed_key_when_left_alt_is_pressed = false
+config.send_composed_key_when_right_alt_is_pressed = true
+
+-- Ctrl+Shift+C/V and Cmd+C/V are WezTerm defaults already.
 config.keys = {
-	-- Copy with Ctrl + Shift + C
-	{ key = "C", mods = "CTRL|SHIFT", action = wezterm.action.CopyTo("Clipboard") },
-
-	-- Paste with Ctrl + Shift + V
-	{ key = "V", mods = "CTRL|SHIFT", action = wezterm.action.PasteFrom("Clipboard") },
-
-	-- Search: Ctrl+Shift+F opens the built-in search overlay by default,
-	-- this just adds an explicit regex-search shortcut for convenience.
 	{ key = "F", mods = "CTRL|ALT", action = wezterm.action.Search({ Regex = "" }) },
 }
 
--- Tmux
--- config.default_prog = { 'tmux', 'new-session', '-A', '-s', 'sungp' }
-
--- Auto-maximize the window to the screen's work area (excludes the Windows
--- taskbar) so the layout — and the search bar at the bottom — always fits,
--- no matter the monitor's resolution or aspect ratio.
+-- ── Start maximized ─────────────────────────────────────────────────────────
 wezterm.on("gui-startup", function(cmd)
-	local tab, pane, window = wezterm.mux.spawn_window(cmd or {})
+	local _, _, window = wezterm.mux.spawn_window(cmd or {})
 	window:gui_window():maximize()
 end)
 
--- Also maximize when reattaching to a running mux domain (gui-startup does
--- not fire in that case).
-wezterm.on("gui-attached", function(domain)
+wezterm.on("gui-attached", function()
 	local workspace = wezterm.mux.get_active_workspace()
 	for _, window in ipairs(wezterm.mux.all_windows()) do
 		if window:get_workspace() == workspace then
@@ -97,5 +97,4 @@ wezterm.on("gui-attached", function(domain)
 	end
 end)
 
--- Return the final configuration to wezterm
 return config
