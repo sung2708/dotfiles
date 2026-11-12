@@ -1,6 +1,7 @@
 -- Copy this file to lua/config/local.lua for settings that belong to one
 -- machine. local.lua is ignored by Git and is loaded before plugins.
 -- vim.g.sungp_low_spec = true
+-- vim.g.sungp_welcome = false -- hide the startup welcome notification
 -- vim.g.sungp_animations = false -- keep notification animations off
 -- Examples:
 -- vim.env.JAVA_HOME = "/path/to/jdk"

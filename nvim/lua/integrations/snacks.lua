@@ -273,6 +273,27 @@ if snacks then
         end,
     })
 
+    local function welcome()
+        if vim.g.sungp_welcome ~= false and #vim.api.nvim_list_uis() > 0 then
+            local message = "Welcome back! Space f f: find files · Space u h: notification history"
+            local filename = vim.fn.expand("%:t")
+            if vim.bo.buftype == "" and filename ~= "" then
+                message = "Happy editing! You’re in " .. vim.fn.strtrans(filename)
+            end
+            snacks.notifier.notify(
+                message,
+                vim.log.levels.INFO,
+                { title = "Neovim", timeout = 3000, history = false }
+            )
+        end
+    end
+
+    if vim.v.vim_did_enter == 1 then
+        vim.schedule(welcome)
+    else
+        vim.api.nvim_create_autocmd("VimEnter", { once = true, callback = welcome })
+    end
+
     vim.keymap.set("n", "<leader>sd", function()
         snacks.dashboard()
     end, { desc = "Dashboard: Open" })
