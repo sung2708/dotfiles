@@ -2,12 +2,12 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
 -- ── Shell: open or attach to the tmux session "sungp" ──────────────────────
--- Falls back to the login shell if MacPorts tmux is missing, so WezTerm
--- still opens instead of closing immediately.
-local tmux = "/opt/local/bin/tmux"
-if #wezterm.glob(tmux) > 0 then
-	config.default_prog = { tmux, "new-session", "-A", "-s", "sungp" }
-end
+-- Keep the same search and fallback as Ghostty.
+config.default_prog = {
+	"/bin/zsh",
+	"-lc",
+	[[export PATH="$PATH:/opt/local/bin:/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin"; tmux new-session -A -s sungp || exec /bin/zsh -l]],
+}
 
 -- ── Rendering ───────────────────────────────────────────────────────────────
 -- WebGpu draws through Metal on macOS; LowPower keeps it on the integrated
@@ -27,7 +27,9 @@ config.font = wezterm.font_with_fallback({
 	"Apple Color Emoji",
 })
 config.font_size = 13
-config.line_height = 1.05
+-- Keep line_height at 1.0: taller rows leave gaps around the powerline
+-- separators of tmux, Lualine and Bufferline (the "clipped corners" look).
+config.line_height = 1.0
 -- Thicker, slightly lower underlines so LSP undercurls are easy to see.
 config.underline_thickness = 2
 config.underline_position = -2
@@ -35,7 +37,7 @@ config.underline_position = -2
 -- ── Window ──────────────────────────────────────────────────────────────────
 -- 0.80 let the wallpaper wash out dark themes (indent guides and line
 -- numbers disappeared in Neovim). 0.90 keeps the glass look but stays legible.
-config.window_background_opacity = 0.90
+config.window_background_opacity = 0.85
 config.macos_window_background_blur = 20
 config.window_decorations = "RESIZE"
 config.window_padding = { left = 6, right = 6, top = 4, bottom = 0 }

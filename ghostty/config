@@ -1,57 +1,41 @@
-font-family = CaskaydiaCove NF Bold Italic
-font-size = 11
-theme = "catppuccin-mocha"
+# Ghostty — kept in step with wezterm/wezterm.lua.
+# Check after editing: ghostty +validate-config
+
+# ── Shell: open or attach tmux session "sungp" (falls back to zsh) ─────────
+command = /bin/zsh -lc 'export PATH="$PATH:/opt/local/bin:/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin"; tmux new-session -A -s sungp || exec /bin/zsh -l'
+
+# ── Font (bundled JetBrains Mono + Nerd Font symbols) ──────────────────────
+# Regular-weight upright text keeps Bold and Italic meaningful in Neovim.
+font-family = JetBrains Mono
+font-style = Medium
+font-size = 13
+adjust-cell-height = 5%
+
+# ── Colours: Catppuccin Mocha, same as WezTerm / Neovim ────────────────────
+theme = Catppuccin Mocha
+selection-background = f9e2af
+selection-foreground = 1e1e2e
+
+# ── Window ─────────────────────────────────────────────────────────────────
+background-opacity = 0.90
+background-blur = 20
+macos-titlebar-style = hidden      # tmux provides windows and panes
+window-padding-x = 6
+window-padding-y = 4,0
+window-padding-balance = true
+window-colorspace = display-p3
+maximize = true
+confirm-close-surface = false      # the tmux session survives
+
+# ── Cursor / mouse ─────────────────────────────────────────────────────────
+cursor-style = bar
+cursor-style-blink = false
 shell-integration-features = no-cursor,sudo,no-title
-cursor-style = block
-adjust-cell-height = 35%
-background-opacity = 0.85
-
 mouse-hide-while-typing = true
-mouse-scroll-multiplier = 2
-
-window-padding-balance = true 
-window-save-state = always
-macos-titlebar-style=transparent
-window-colorspace = "display-p3"
-background = 1C2021
-# foreground = d4be98
-
-# keybindings
-keybind = cmd+s>r=reload_config
-keybind = cmd+s>x=close_surface
-
-keybind = cmd+s>n=new_window
-
-# tabs 
-keybind = cmd+s>c=new_tab
-keybind = cmd+s>shift+l=next_tab
-keybind = cmd+s>shift+h=previous_tab
-keybind = cmd+s>comma=move_tab:-1
-keybind = cmd+s>period=move_tab:1
-
-# quick tab switch
-keybind = cmd+s>1=goto_tab:1
-keybind = cmd+s>2=goto_tab:2
-keybind = cmd+s>3=goto_tab:3
-keybind = cmd+s>4=goto_tab:4
-keybind = cmd+s>5=goto_tab:5
-keybind = cmd+s>6=goto_tab:6
-keybind = cmd+s>7=goto_tab:7
-keybind = cmd+s>8=goto_tab:8
-keybind = cmd+s>9=goto_tab:9
-
-# split
-keybind = cmd+s>\=new_split:right
-keybind = cmd+s>-=new_split:down
-
-keybind = cmd+s>j=goto_split:bottom
-keybind = cmd+s>k=goto_split:top
-keybind = cmd+s>h=goto_split:left
-keybind = cmd+s>l=goto_split:right
-
-keybind = cmd+s>z=toggle_split_zoom
-
-keybind = cmd+s>e=equalize_splits
-
-# other
 copy-on-select = clipboard
+
+# ── Keyboard ───────────────────────────────────────────────────────────────
+# Left Option sends Alt (Neovim/tmux Alt+h/j/k/l); right Option types accents.
+macos-option-as-alt = left
+
+keybind = cmd+s>r=reload_config
