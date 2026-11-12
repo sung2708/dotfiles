@@ -1,33 +1,54 @@
-# name = sungp2708
-
 [user]
-    name = sung2708
-    email = aki8082002@gmail.com
+    name = Phan Đức Sung
+    email = aki18082002@gmail.com
 
 [core]
     editor = nvim
-	pager = delta
+    pager = delta
 
 [init]
     defaultBranch = main
 
+# ── Auth: GitHub over HTTPS via the gh CLI ──────────────────────────────────
+# The empty helper clears the default (macOS Keychain) before adding gh.
+# gh is looked up on PATH, so this works with Homebrew, MacPorts or /usr/local.
+[credential "https://github.com"]
+    helper =
+    helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+    helper =
+    helper = !gh auth git-credential
+
+# ── Git LFS (written by `git lfs install`) ──────────────────────────────────
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
+# ── Diffs: delta (theme from bat/themes, run `bat cache --build`) ───────────
 [interactive]
     diffFilter = delta --color-only
 
 [delta]
-    negative = true
+    dark = true
+    navigate = true        # n / N jump between files
     syntax-theme = "Catppuccin Mocha"
     line-numbers = true
     side-by-side = true
     line-numbers-left-format = ""
     line-numbers-right-format = "│ "
 
-
-[merge]
-    tool = nvim
-    conflictstyle = diff3
-
 [diff]
-    tool = nvim
+    tool = nvimdiff
     context = 3
-    colorMoved = true
+    colorMoved = default
+
+# ── Merges ──────────────────────────────────────────────────────────────────
+[merge]
+    tool = nvimdiff
+    conflictstyle = zdiff3  # needs git >= 2.35
+
+[mergetool]
+    prompt = false
+    keepBackup = false

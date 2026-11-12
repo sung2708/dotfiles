@@ -111,13 +111,24 @@ unalias y 2>/dev/null; function y {
 # export NVM_DIR="$HOME/.nvm"; [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
 # eval "$(direnv hook zsh)"
 # eval "$(uv generate-shell-completion zsh)"
-
+#  ─────────────────────────────────────────────────────────────────────────────
+# My claude
+#  ─────────────────────────────────────────────────────────────────────────────
+myclaude() {
+  env -u ANTHROPIC_BASE_URL \
+      -u ANTHROPIC_AUTH_TOKEN \
+      -u ANTHROPIC_API_KEY \
+      -u ANTHROPIC_MODEL \
+      CLAUDE_CONFIG_DIR="$HOME/.claude-personal" \
+      claude "$@"
+}
 # ─────────────────────────────────────────────────────────────────────────────
 # Aliases
 # ─────────────────────────────────────────────────────────────────────────────
 alias cls='clear'
 alias s='exec zsh'                         # reload the shell cleanly
 alias ez='nvim ~/.zshrc'                   # was `zsh`, which hid the zsh command
+alias ew='nvim ~/.config/wezterm/wezterm.lua'
 alias e='exit'
 
 alias ls='eza --icons=always --group-directories-first'
@@ -132,6 +143,25 @@ alias nt='nvim ~/.tmux.conf'
 alias f='fuck'
 alias lzg='lazygit'
 alias lzd='lazydocker'
+
+alias vi='nvim'
+alias vim='nvim'
+
+# ── C++───────────────────────────────────────────────────────────────────────
+cpp() {
+  local src=$1; shift
+  [[ -f $src ]] || { print -u2 "File not found: $src"; return 1; }
+  local out="${TMPDIR:-/tmp}/${src:t:r}"
+  c++ -std=c++20 -Wall -Wextra -Wpedantic -g \
+    -fsanitize=address,undefined ${=CXXFLAGS_EXTRA} "$src" -o "$out" && MallocNanoZone=0 "$out" "$@"
+}
+cppb() { c++ -std=c++20 -Wall -Wextra -Werror -O2 "$1" -o "${1:r}" }
+
+# ── Go ──────────────────────────────────────────────────────────────────────
+alias gor='go run .'
+alias gob='go build -o bin/ ./...'
+alias got='go test ./...'
+
 # (alias y='yazi' removed: it overrode the y() function above)
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -141,3 +171,11 @@ zsh_hl="${ZSH_CUSTOM:-$ZSH/custom}/plugins/zsh-syntax-highlighting/zsh-syntax-hi
 [[ -r "$zsh_hl" ]] && source "$zsh_hl"
 unset zsh_hl
 
+# ─────────────────────────────────────────────────────────────────────────────
+# pnpm
+# ─────────────────────────────────────────────────────────────────────────────
+export PNPM_HOME='/Users/hd-416/Library/pnpm'
+case ":$PATH:" in
+  ":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac

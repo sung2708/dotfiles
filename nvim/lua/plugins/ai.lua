@@ -1,0 +1,502 @@
+local plugin_data_home = vim.fs.joinpath(vim.fn.stdpath("data"), "nvim-config")
+local codex_sqlite_home = vim.fs.joinpath(plugin_data_home, "codex-sqlite")
+local selection_actions = require("integrations.codecompanion")
+
+local codex_command = vim.fn.has("win32") ~= 0 and { "cmd.exe", "/d", "/s", "/c", "codex-acp" } or { "codex-acp" }
+
+local function stop_last_chat()
+    local chat = require("codecompanion").last_chat()
+    if not chat then
+        vim.notify("CodeCompanion has no active chat", vim.log.levels.WARN)
+        return
+    end
+
+    chat._sungp_submit_request = (chat._sungp_submit_request or 0) + 1
+    chat:stop()
+end
+
+local function with_chat(callback)
+    local codecompanion = require("codecompanion")
+    local chat = codecompanion.last_chat() or codecompanion.chat()
+
+    if not chat then
+        vim.notify("CodeCompanion could not create a chat", vim.log.levels.ERROR)
+        return
+    end
+
+    if chat.ui and not chat.ui:is_visible() then
+        chat.ui:open()
+    end
+
+    callback(chat)
+end
+
+local function with_ready_acp_session(chat, callback)
+    if chat.adapter.type ~= "acp" then
+        callback(chat)
+        return
+    end
+
+    local attempts = 0
+    local max_attempts = 400
+    chat._sungp_options_request = (chat._sungp_options_request or 0) + 1
+    local request = chat._sungp_options_request
+
+    local function wait_for_session()
+        if request ~= chat._sungp_options_request then
+            return
+        end
+        if not vim.api.nvim_buf_is_valid(chat.bufnr) then
+            return
+        end
+
+        local connection = chat.acp_connection
+        if connection and connection:is_connected() then
+            callback(chat)
+            return
+        end
+
+        attempts = attempts + 1
+        if attempts >= max_attempts then
+            vim.notify("Timed out while preparing the ACP session", vim.log.levels.ERROR)
+            return
+        end
+
+        vim.defer_fn(wait_for_session, 50)
+    end
+
+    wait_for_session()
+end
+
+local function change_model_or_provider()
+    with_chat(function(chat)
+        with_ready_acp_session(chat, function(ready_chat)
+            require("codecompanion.interactions.chat.keymaps.change_adapter").callback(ready_chat)
+        end)
+    end)
+end
+
+local function change_acp_session_options()
+    with_chat(function(chat)
+        with_ready_acp_session(chat, function(ready_chat)
+            if ready_chat.adapter.type ~= "acp" then
+                vim.notify("Effort is available through an ACP provider such as Codex", vim.log.levels.WARN)
+                return
+            end
+
+            require("codecompanion.interactions.chat.slash_commands.builtin.acp_session_options")
+                .new({ Chat = ready_chat })
+                :execute()
+        end)
+    end)
+end
+
+local function open_review_diff(target)
+    vim.api.nvim_cmd({
+        cmd = "DiffviewOpen",
+        args = {
+            "-C" .. target.root,
+            target.baseline_ref,
+            "--",
+            target.path,
+        },
+    }, {})
+end
+
+return {
+    {
+        "olimorris/codecompanion.nvim",
+        version = "^19.0.0",
+        cmd = {
+            "CodeCompanion",
+            "CodeCompanionActions",
+            "CodeCompanionChat",
+            "CodeCompanionCodeReview",
+        },
+        keys = {
+            {
+                "<leader>a?",
+                "<cmd>CodeCompanionActions<cr>",
+                mode = { "n", "v" },
+                desc = "CodeCompanion: Actions",
+            },
+            {
+                "<leader>aa",
+                "<cmd>CodeCompanionActions<cr>",
+                mode = "n",
+                desc = "CodeCompanion: Actions",
+            },
+            {
+                "<leader>aa",
+                "<cmd>CodeCompanionChat Add<cr>",
+                mode = "v",
+                desc = "CodeCompanion: Add Selection",
+            },
+            {
+                "<leader>am",
+                selection_actions.selection_menu,
+                mode = "v",
+                desc = "CodeCompanion: Selection Menu",
+            },
+            {
+                "<leader>aq",
+                selection_actions.ask_selection,
+                mode = "v",
+                desc = "CodeCompanion: Ask Selection",
+            },
+            {
+                "<leader>ae",
+                function()
+                    selection_actions.run_selection_prompt("explain")
+                end,
+                mode = "v",
+                desc = "CodeCompanion: Explain Selection",
+            },
+            {
+                "<leader>af",
+                function()
+                    selection_actions.run_selection_prompt("fix")
+                end,
+                mode = "v",
+                desc = "CodeCompanion: Fix Selection",
+            },
+            {
+                "<leader>al",
+                function()
+                    selection_actions.run_selection_prompt("lsp")
+                end,
+                mode = "v",
+                desc = "CodeCompanion: Explain Selection Diagnostics",
+            },
+            {
+                "<leader>at",
+                function()
+                    selection_actions.run_selection_prompt("tests_chat")
+                end,
+                mode = "v",
+                desc = "CodeCompanion: Generate Selection Tests",
+            },
+            {
+                "<leader>aR",
+                function()
+                    selection_actions.run_selection_prompt("refactor_selection")
+                end,
+                mode = "v",
+                desc = "CodeCompanion: Refactor Selection",
+            },
+            {
+                "<leader>ac",
+                "<cmd>CodeCompanionCodeReview Comment<cr>",
+                mode = { "n", "v" },
+                desc = "CodeCompanion: Review Comment",
+            },
+            {
+                "<leader>ai",
+                "<cmd>CodeCompanionChat Toggle<cr>",
+                mode = { "n", "v" },
+                desc = "CodeCompanion: Toggle Chat",
+            },
+            {
+                "<leader>an",
+                "<cmd>CodeCompanionChat<cr>",
+                mode = { "n", "v" },
+                desc = "CodeCompanion: New Chat",
+            },
+            {
+                "<leader>aM",
+                change_model_or_provider,
+                mode = "n",
+                desc = "CodeCompanion: Change Provider / Model",
+            },
+            {
+                "<leader>ao",
+                change_acp_session_options,
+                mode = "n",
+                desc = "CodeCompanion: ACP Model / Effort",
+            },
+            {
+                "<leader>ar",
+                "<cmd>CodeCompanionChat RefreshCache<cr>",
+                desc = "CodeCompanion: Refresh Cache",
+            },
+            {
+                "<leader>aS",
+                stop_last_chat,
+                desc = "CodeCompanion: Stop",
+            },
+            {
+                "<leader>av",
+                "<cmd>CodeCompanionCodeReview<cr>",
+                desc = "CodeCompanion: Review Agent Changes",
+            },
+            {
+                "<leader>aV",
+                "<cmd>CodeCompanionCodeReview All<cr>",
+                desc = "CodeCompanion: Review All Changes",
+            },
+            {
+                "<leader>ax",
+                "<cmd>CodeCompanionChat Changes<cr>",
+                desc = "CodeCompanion: Changed Files",
+            },
+        },
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter",
+            "MunifTanjim/nui.nvim",
+            {
+                "HakonHarnes/img-clip.nvim",
+                opts = {
+                    filetypes = {
+                        codecompanion = {
+                            prompt_for_file_name = false,
+                            template = "[Image]($FILE_PATH)",
+                            use_absolute_path = true,
+                        },
+                    },
+                },
+            },
+        },
+        config = function(_, opts)
+            vim.fn.mkdir(codex_sqlite_home, "p")
+            require("codecompanion").setup(opts)
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "CodeCompanionChatModel",
+                callback = function(event)
+                    local data = event.data
+                    if not data or not data.bufnr or not vim.api.nvim_buf_is_valid(data.bufnr) then
+                        return
+                    end
+
+                    local adapter = data.adapter or {}
+                    local model = data.model or "default"
+                    local current = string.format("%s / %s", adapter.formatted_name or adapter.name or "Codex", model)
+                    local previous = vim.b[data.bufnr].sungp_codecompanion_model
+                    vim.b[data.bufnr].sungp_codecompanion_model = current
+                    if not previous or previous == current then
+                        return
+                    end
+                    vim.notify("Đã chuyển model: " .. current, vim.log.levels.INFO)
+                end,
+            })
+        end,
+        opts = {
+            mcp = {
+                servers = {
+                    exa = {
+                        cmd = vim.fn.has("win32") == 1
+                                and { "cmd.exe", "/d", "/s", "/c", "npx", "-y", "exa-mcp-server" }
+                            or { "npx", "-y", "exa-mcp-server" },
+                        env = {
+                            EXA_API_KEY = vim.env.EXA_API_KEY,
+                        },
+                    },
+                },
+                opts = {
+                    default_servers = (vim.env.EXA_API_KEY or "") ~= "" and { "exa" } or {},
+                },
+            },
+            adapters = {
+                acp = {
+                    codex = function()
+                        return require("codecompanion.adapters").extend("codex", {
+                            commands = {
+                                default = codex_command,
+                            },
+                            defaults = {
+                                auth_method = "chat-gpt",
+                                mcpServers = "inherit_from_config",
+                            },
+                            env = {
+                                NODE_NO_WARNINGS = "1",
+                                CODEX_CONFIG = vim.json.encode({
+                                    skills = { max_context_tokens = 10000 },
+                                }),
+                                -- Keep authentication/configuration in ~/.codex,
+                                -- but isolate ACP's live SQLite files from Codex Desktop.
+                                CODEX_SQLITE_HOME = codex_sqlite_home,
+                            },
+                        })
+                    end,
+                    qwen = function()
+                        return require("codecompanion.adapters").extend("codex", {
+                            commands = {
+                                default = codex_command,
+                            },
+                            defaults = {
+                                mcpServers = "inherit_from_config",
+                            },
+                            handlers = {
+                                auth = function()
+                                    return true
+                                end,
+                            },
+                            env = {
+                                NODE_NO_WARNINGS = "1",
+                                CODEX_CONFIG = vim.json.encode({
+                                    model = "qwen2.5-coder:3b",
+                                    model_provider = "ollama-launch",
+                                    model_catalog_json = vim.fs.joinpath(
+                                        vim.fn.expand("~"),
+                                        ".codex",
+                                        "qwen-models.json"
+                                    ),
+                                    web_search = "disabled",
+                                    skills = { max_context_tokens = 10000 },
+                                }),
+                                CODEX_SQLITE_HOME = codex_sqlite_home,
+                            },
+                        })
+                    end,
+                    -- shortcut: requires env -u, add a native launcher if Windows needs this profile.
+                    claude_personal = vim.fn.has("win32") == 0 and function()
+                        local adapter = require("codecompanion.adapters").extend("claude_code", {
+                            name = "claude_personal",
+                            formatted_name = "Claude Personal",
+                        })
+                        -- Replace the inherited commands so every launch uses the personal profile.
+                        adapter.commands = {
+                            default = {
+                                "env",
+                                "-u", "ANTHROPIC_BASE_URL",
+                                "-u", "ANTHROPIC_AUTH_TOKEN",
+                                "-u", "ANTHROPIC_API_KEY",
+                                "-u", "ANTHROPIC_MODEL",
+                                "-u", "CLAUDE_CODE_OAUTH_TOKEN",
+                                "CLAUDE_CONFIG_DIR=" .. vim.fn.expand("~/.claude-personal"),
+                                "claude-agent-acp",
+                            },
+                        }
+                        return adapter
+                    end or nil,
+                },
+            },
+            prompt_library = selection_actions.prompt_library(),
+            rules = {
+                opts = {
+                    chat = {
+                        autoload_groups_in_prompt_library = true,
+                    },
+                },
+            },
+            interactions = {
+                chat = {
+                    adapter = "codex",
+                    slash_commands = {
+                        acp_session_options = {
+                            keymaps = {
+                                modes = { n = "<leader>am" },
+                            },
+                        },
+                        buffer = {
+                            keymaps = {
+                                modes = { n = "<leader>ab" },
+                            },
+                            opts = {
+                                provider = "fzf_lua",
+                            },
+                        },
+                        fetch = {
+                            opts = {
+                                provider = "fzf_lua",
+                            },
+                        },
+                        file = {
+                            keymaps = {
+                                modes = { n = "<leader>af" },
+                            },
+                            opts = {
+                                provider = "fzf_lua",
+                            },
+                        },
+                        help = {
+                            keymaps = {
+                                modes = { n = "<leader>ah" },
+                            },
+                            opts = {
+                                provider = "fzf_lua",
+                            },
+                        },
+                        image = {
+                            keymaps = {
+                                modes = { n = "<leader>ap" },
+                            },
+                            opts = {
+                                provider = "snacks",
+                            },
+                        },
+                        mcp = {
+                            opts = {
+                                provider = "snacks",
+                            },
+                        },
+                        resume = {
+                            keymaps = {
+                                modes = { n = "<leader>aR" },
+                            },
+                        },
+                        symbols = {
+                            keymaps = {
+                                modes = { n = "<leader>as" },
+                            },
+                            opts = {
+                                provider = "fzf_lua",
+                            },
+                        },
+                    },
+                    keymaps = {
+                        -- This default is specific to Copilot and otherwise shadows mini.splitjoin.
+                        copilot_stats = false,
+                        paste_image = {
+                            modes = { n = "<leader>aP" },
+                            callback = function()
+                                vim.cmd("PasteImage")
+                            end,
+                            description = "Paste image from clipboard",
+                        },
+                    },
+                    opts = {
+                        completion_provider = "blink",
+                    },
+                },
+                code_review = {
+                    display = {
+                        diff = {
+                            provider = open_review_diff,
+                        },
+                    },
+                },
+                shared = {
+                    keymaps = {
+                        -- Keep Vim's `gv` reselect behavior while an approval prompt is active.
+                        view_diff = {
+                            modes = { n = "<leader>ad" },
+                        },
+                    },
+                },
+            },
+            display = {
+                action_palette = {
+                    provider = "snacks",
+                    opts = {
+                        -- Inline prompt-library entries need an HTTP adapter; show the
+                        -- ACP-safe chat replacements defined above instead.
+                        show_preset_prompts = false,
+                    },
+                },
+                chat = {
+                    start_in_insert_mode = true,
+                    -- ACP agents can emit a separate reasoning stream. It adds many
+                    -- buffer updates without making code generation faster.
+                    show_reasoning = false,
+                    window = {
+                        layout = "vertical",
+                        position = "right",
+                        width = 0.4,
+                        border = "rounded",
+                    },
+                },
+            },
+        },
+    },
+}
