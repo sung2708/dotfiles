@@ -70,7 +70,9 @@ end
 -- Mason owns the configured LSP/formatter/linter executables. Put its bin
 -- directory on PATH before any lazy plugin event so first-save formatting and
 -- linting work even when Mason's UI plugin has not been loaded yet.
-prepend_path(vim.fn.stdpath("data") .. "/mason/bin")
+local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+vim.fn.mkdir(mason_bin, "p")
+prepend_path(mason_bin)
 
 if vim.fn.has("mac") == 1 then
     -- GUI launches may not inherit the package manager's shell PATH.
@@ -80,9 +82,7 @@ if vim.fn.has("mac") == 1 then
     prepend_path(vim.fn.stdpath("config") .. "/bin")
 end
 
-for _, directory in ipairs({ vim.env.UV_PYTHON_BIN_DIR, vim.env.UV_TOOL_BIN_DIR }) do
-    prepend_path(directory)
-end
+prepend_path(vim.env.UV_PYTHON_BIN_DIR)
 
 if vim.fn.has("win32") == 1 then
     local scoop_home = vim.env.SCOOP or vim.fn.expand("~/scoop")
@@ -117,12 +117,20 @@ if vim.fn.has("win32") == 1 then
     end
 end
 
+prepend_path(mason_bin)
+if vim.fn.has("win32") == 0 then
+    prepend_path(vim.env.UV_TOOL_BIN_DIR or vim.fn.expand("~/.local/bin"))
+    prepend_path((vim.env.VOLTA_HOME or vim.fn.expand("~/.volta")) .. "/bin")
+    prepend_path(vim.fn.stdpath("data") .. "/nvim-config/toolchain/node_modules/tree-sitter-cli")
+else
+    prepend_path(vim.env.UV_TOOL_BIN_DIR)
+end
+
 -- Keep installer-managed runtimes ahead of other package-manager shims.
 local toolchain_paths = vim.g.sungp_toolchain_paths or {}
 for index = #toolchain_paths, 1, -1 do
     prepend_path(toolchain_paths[index])
 end
-prepend_path(vim.fn.stdpath("data") .. "/mason/bin")
 
 -- No plugin in this config is a Python remote plugin. Without an explicit
 -- host, the first `has('python3')` (run by the built-in Python ftplugin) probes

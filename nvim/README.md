@@ -92,6 +92,28 @@ nvim
 lazy.nvim installs the plugins on first start; Mason then installs language
 servers and tools in the background.
 
+On macOS/Linux, for a manual or Stow setup, Volta can supply Node and npm,
+and uv can supply Python-based tools in isolated environments:
+
+```sh
+volta install node@24
+uv python install 3.13
+uv tool install --managed-python --python 3.13 clang-format
+uv tool install --managed-python --python 3.13 basedpyright
+npm install --prefix "${XDG_DATA_HOME:-$HOME/.local/share}/nvim/nvim-config/toolchain" \
+  --save-exact tree-sitter-cli@0.26.11
+```
+
+Neovim discovers the default Volta and uv bin directories and the installed
+Tree-sitter binary. Use `VOLTA_HOME` and `UV_TOOL_BIN_DIR` for custom locations.
+If a custom tool path is missing inside an existing tmux session, follow the
+[tmux PATH refresh steps](../README.md#refresh-tmux-path).
+Mason still manages the other language tools. After replacing a runtime,
+run `:ConfigHealth` and `:ConformInfo`. If a Mason executable has a broken
+link or interpreter, reinstall it with `:MasonInstall --force <package>`.
+Install the C compiler, JDK 25 and Maven via your system package manager
+when needed. `pngpaste` on macOS is optional for pasting images into chat.
+
 ## Requirements
 
 | Required | Why |

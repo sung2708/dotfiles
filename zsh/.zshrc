@@ -20,6 +20,7 @@ export BUN_INSTALL="$HOME/.bun"
 typeset -U path PATH # never add the same directory twice
 path=(
   $HOME/.local/bin
+  ${VOLTA_HOME:-$HOME/.volta}/bin
   $HOME/.antigravity-ide/antigravity-ide/bin
   /opt/local/bin /opt/local/sbin # MacPorts: tmux, nvim, fzf, ...
   $BUN_INSTALL/bin
@@ -85,6 +86,7 @@ export FZF_CTRL_T_OPTS="--preview '$show_file_or_dir_preview'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 
 export BAT_THEME="Catppuccin Mocha"
+export EZA_CONFIG_DIR="${EZA_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/eza}"
 
 # TheFuck starts Python (~100–600 ms) just to define an alias. Load it the
 # first time you actually type `fuck` (or `f`).
@@ -148,14 +150,25 @@ alias vi='nvim'
 alias vim='nvim'
 
 # ── C++───────────────────────────────────────────────────────────────────────
-cpp() {
+cpp() (
   local src=$1; shift
   [[ -f $src ]] || { print -u2 "File not found: $src"; return 1; }
-  local out="${TMPDIR:-/tmp}/${src:t:r}"
+  local build_dir out
+  build_dir="$(mktemp -d "${TMPDIR:-/tmp}/cpp.XXXXXX")" || return 1
+  out="$build_dir/program"
+  trap 'rm -r -- "$build_dir"' EXIT
   c++ -std=c++20 -Wall -Wextra -Wpedantic -g \
     -fsanitize=address,undefined ${=CXXFLAGS_EXTRA} "$src" -o "$out" && MallocNanoZone=0 "$out" "$@"
+)
+cppb() {
+  local src=$1 out=${1:r}
+  [[ -f $src ]] || { print -u2 "File not found: $src"; return 1; }
+  (setopt noclobber; : > "$out") || return 1
+  if ! c++ -std=c++20 -Wall -Wextra -Werror -O2 "$src" -o "$out"; then
+    unlink "$out"
+    return 1
+  fi
 }
-cppb() { c++ -std=c++20 -Wall -Wextra -Werror -O2 "$1" -o "${1:r}" }
 
 # ── Go ──────────────────────────────────────────────────────────────────────
 alias gor='go run .'

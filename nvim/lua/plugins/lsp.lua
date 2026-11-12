@@ -100,6 +100,7 @@ return {
             { "<leader>cm", "<cmd>Mason<cr>", desc = "Code: Mason" },
         },
         opts = {
+            PATH = "skip", -- config.options already sets tool precedence.
             ui = {
                 border = "rounded",
             },

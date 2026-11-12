@@ -65,6 +65,21 @@ function M.check()
     check_tool("Tree-sitter CLI", { "tree-sitter" }, false, "parser installation")
     check_tool("C compiler", { "cc", "clang", "gcc", "zig", "cl" }, false, "Treesitter/native plugins")
     check_tool("Node.js", { "node" }, false, "JavaScript tooling and debugging")
+    check_tool("npm", { "npm" }, false, "Mason packages and Tree-sitter CLI installation")
+    local _, clang_format = executable({ "clang-format" })
+    if clang_format then
+        local ok, result = pcall(function()
+            return vim.system({ clang_format, "--version" }, { text = true }):wait(5000)
+        end)
+        if ok and result.code == 0 then
+            vim.health.ok(vim.trim(result.stdout) .. " (" .. clang_format .. ")")
+        else
+            vim.health.warn("clang-format cannot start: " .. clang_format .. "; reinstall it with Mason or uv")
+        end
+    else
+        vim.health.warn("clang-format not found (C/C++ formatting)")
+    end
+    check_tool("Basedpyright", { "basedpyright-langserver" }, false, "Python LSP")
     check_tool("Codex CLI", { "codex" }, false, "CodeCompanion Codex authentication")
     check_tool("Codex ACP", { "codex-acp" }, false, "CodeCompanion Codex chat")
     check_tool("Python", { "python3", "python" }, false, "Python tests and REPL")

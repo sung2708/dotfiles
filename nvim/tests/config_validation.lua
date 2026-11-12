@@ -18,8 +18,7 @@ for _ = 1, 2 do
     require("config.options")
 end
 local path = vim.split(vim.env.PATH, package.config:sub(1, 1) == "\\" and ";" or ":", { plain = true })
-local offset = vim.fn.isdirectory(vim.fn.stdpath("data") .. "/mason/bin") == 1 and 1 or 0
-assert(path[1 + offset] == fixture .. "/first" and path[2 + offset] == fixture .. "/second")
+assert(path[1] == fixture .. "/first" and path[2] == fixture .. "/second")
 local count = 0
 for _, entry in ipairs(path) do
     if entry == fixture .. "/first" then

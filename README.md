@@ -186,7 +186,7 @@ backup_dir=$(mktemp -d "$HOME/.dotfiles-backup.XXXXXX") && (
 ```
 
 ```bash
-git clone git@github.com:sung2708/dotfiles.git ~/dotfiles
+git clone https://github.com/sung2708/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 
 mkdir -p ~/.config/{wezterm,ghostty,nvim,bat,eza,fastfetch}
@@ -199,6 +199,20 @@ stow -t ~/.config/bat          bat
 stow -t ~/.config/eza          eza
 stow -t ~/.config/fastfetch    fastfetch
 ```
+
+For an existing Neovim config, preview with
+`stow -n -v -t ~/.config/nvim nvim`. If Stow reports conflicts, move the
+old directory to a backup before linking:
+
+```bash
+backup_dir=$(mktemp -d "$HOME/.nvim-backup.XXXXXX") &&
+  mv ~/.config/nvim "$backup_dir/" &&
+  mkdir -p ~/.config/nvim &&
+  stow -t ~/.config/nvim nvim
+```
+
+Edit linked files in the repo. Local symlinks reflect those edits immediately.
+Run the corresponding Stow command again if a new file needs a link.
 
 ## ✅ After linking
 
@@ -214,12 +228,30 @@ exec zsh               # reload; Powerlevel10k runs its wizard the first time
 - **Neovim**: if you linked it with Stow, install the tools listed under
   [Neovim requirements](nvim/README.md#requirements), run
   `sh ~/.config/nvim/bin/check-environment.sh`, then open `nvim` to install
-  plugins. The one-command installer in the Neovim README is a separate
+  plugins. For Node, Python-based tools and Tree-sitter, see the
+  [Volta and uv commands](nvim/README.md#manual-install). Inside Neovim,
+  run `:ConfigHealth` to check the tools it actually sees.
+  The one-command installer in the Neovim README is a separate
   install method that can replace the Stow setup with a standalone checkout.
 - **eza**: if `ls` is not in Catppuccin colours, add
   `export EZA_CONFIG_DIR="$HOME/.config/eza"` to your shell.
 - **git**: `user.name` / `user.email` in `gitconfig/.gitconfig` are mine —
   change them on someone else's machine.
+
+### Refresh tmux PATH
+
+Tmux stores `PATH` for the server and for each session. From a shell with the
+updated PATH, refresh a running server and its sessions with:
+
+```sh
+tmux set-environment -g PATH "$PATH"
+for session in $(tmux list-sessions -F '#{session_id}'); do
+  tmux set-environment -t "$session" PATH "$PATH"
+done
+```
+
+Existing pane shells need `exec zsh` to pick up the new PATH. New tmux servers
+inherit the PATH of the shell that starts them.
 
 ## 🔍 Check what is installed
 

@@ -93,6 +93,13 @@ công cụ ở chế độ nền.
 
 ## Yêu cầu
 
+Nếu cài thủ công hoặc dùng Stow trên macOS/Linux, dùng Volta cho Node/npm
+và uv cho `clang-format`, `basedpyright`. Xem các lệnh cài và cách sửa
+wrapper Mason bị hỏng trong [Manual install](README.md#manual-install).
+Cài compiler C, JDK 25 và Maven qua trình quản lý gói hệ thống khi cần.
+Nếu Neovim trong tmux đang chạy không thấy đường dẫn công cụ tùy chỉnh,
+xem [cách làm mới PATH của tmux](../README.md#refresh-tmux-path).
+
 | Bắt buộc | Để làm gì |
 | --- | --- |
 | Neovim **0.12+** | LSP có sẵn, inline completion (Copilot), Treesitter `main` |
