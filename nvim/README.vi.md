@@ -296,7 +296,8 @@ vi, `iH` khối đang tô, cùng bộ của mini.ai (`a(`, `i"`, `aq`, `ab`, …
 | `Space xx` / `Space xX` | Lỗi trong Trouble: toàn workspace / buffer |
 | `Space cs` / `Space cl` | Symbol / tham chiếu LSP trong Trouble |
 | `Space xD` | Đưa lỗi vào quickfix |
-| `Space xt` / `Space xf` / `Space xq` | TODO trong Trouble / FzfLua / quickfix |
+| `Space xt` / `Space xf` / `Space xq` | TODO trong Trouble / Snacks picker / quickfix |
+| `Space xF` / `Space xR` | Chỉ TODO/FIX/FIXME trong FzfLua / Trouble |
 | `Space qf` / `Space qF` | Bật/tắt / chuyển vào quickfix |
 | `Space uv` / `Space ud` | Bật/tắt dòng lỗi dưới con trỏ / mọi lỗi |
 

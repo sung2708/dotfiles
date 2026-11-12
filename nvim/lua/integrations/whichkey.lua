@@ -262,7 +262,7 @@ if wk then
         { "<leader>xF", desc = "Todo/Fix FzfLua", icon = { icon = "󰱼", color = "green" } },
         { "<leader>xR", desc = "Todo/Fix Trouble", icon = { icon = "󰒡", color = "orange" } },
         { "<leader>xX", desc = "Buffer Diagnostics", icon = { icon = "󰒡", color = "orange" } },
-        { "<leader>xf", desc = "Todo FzfLua", icon = { icon = "󰱼", color = "green" } },
+        { "<leader>xf", desc = "Todo Snacks", icon = { icon = "󰱼", color = "green" } },
         { "<leader>xl", desc = "Todo Location List", icon = { icon = "󰁨", color = "yellow" } },
         { "<leader>xq", desc = "Todo Quickfix", icon = { icon = "󰁨", color = "yellow" } },
         { "<leader>xt", desc = "Todo Trouble", icon = { icon = "󰒡", color = "orange" } },

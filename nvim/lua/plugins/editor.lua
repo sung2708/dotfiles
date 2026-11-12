@@ -265,7 +265,7 @@ return {
             { "]t", desc = "Todo: Next" },
             { "[t", desc = "Todo: Previous" },
             { "<leader>xt", desc = "Todo: Trouble" },
-            { "<leader>xf", desc = "Todo: FzfLua" },
+            { "<leader>xf", desc = "Todo: Snacks" },
             { "<leader>xq", desc = "Todo: Quickfix" },
             { "<leader>xl", desc = "Todo: Location List" },
             { "<leader>xF", desc = "Todo/Fix: FzfLua" },
@@ -273,6 +273,7 @@ return {
         },
         dependencies = {
             "nvim-lua/plenary.nvim",
+            "folke/snacks.nvim",
         },
         config = function()
             require("integrations.todo")

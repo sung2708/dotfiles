@@ -315,7 +315,8 @@ Text objects: `af`/`if` function call, `am`/`im` function, `ac`/`ic` class,
 | `Space xx` / `Space xX` | Diagnostics in Trouble: workspace / buffer |
 | `Space cs` / `Space cl` | Symbols / LSP references in Trouble |
 | `Space xD` | Diagnostics to quickfix |
-| `Space xt` / `Space xf` / `Space xq` | TODOs in Trouble / FzfLua / quickfix |
+| `Space xt` / `Space xf` / `Space xq` | TODOs in Trouble / Snacks picker / quickfix |
+| `Space xF` / `Space xR` | TODO/FIX/FIXME in FzfLua / Trouble |
 | `Space qf` / `Space qF` | Toggle / focus quickfix |
 | `Space uv` / `Space ud` | Toggle diagnostic lines / all diagnostics |
 
